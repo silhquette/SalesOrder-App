@@ -30,7 +30,7 @@
         </table>
         <table cellspacing="0" style="position:relative;top:0;">
             <tbody>
-                <tr><td rowspan="4" style="padding: 0 1em 0 0"><img src="{{ public_path('assets/images/test.jpg') }}" style="height: 75px"></td><td class="font-semibold"><h3 style="padding: 0;margin:0 ;">PT. BUMI ISAM MANDIRI</h3></td></tr>
+                <tr><td rowspan="4" style="padding: 0 1em 0 0"><img src="{{ public_path('test/assets/images/test.jpg') }}" style="height: 75px"></td><td class="font-semibold"><h3 style="padding: 0;margin:0 ;">PT. BUMI ISAM MANDIRI</h3></td></tr>
                 <tr><td style="font-size: .9em">Jalan Kehakiman XI No. C-13 Tanah Tinggi</td></tr>
                 <tr><td style="font-size: .9em">Kota Tangerang, Banten - 15119</td></tr>
                 <tr><td style="font-size: .9em">Telp: 0821-2212-1913 Email: info@ptbim.co.id Website: www.ptbim.co.id</td></tr>
