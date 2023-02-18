@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Surat Jalan-{{ $order["delivery_order"] }}-{{ $order["customer"]["name"] }}</title>
+    <title>Surat Jalan-{{ $order["order_code"] }}-{{ $order["customer"]["name"] }}</title>
     <style>
         .text-center {
             text-align: center
@@ -35,7 +35,7 @@
             <tbody>
                 <tr>
                     <td class="font-semibold">Tanggal:</td>
-                    <td>{{ $now }}</td>
+                    <td>{{ date_format(date_create($order["print_date"]),"d M Y") }}</td>
                 </tr>
                 <tr>
                     <td class="font-semibold">Kepada:</td>
@@ -52,7 +52,7 @@
         </table>
         <table cellspacing="0" style="position:absolute;top:0;">
             <tbody>
-                <tr><td rowspan="4" style="padding: 0 1em 0 0"><img src="{{ public_path('assets/images/test.jpg') }}" style="height: 75px"></td><td class="font-semibold"><h3 style="padding: 0;margin:0 ;">PT. BUMI ISAM MANDIRI</h3></td></tr>
+                <tr><td rowspan="4" style="padding: 0 1em 0 0"><img src="assets/images/test.jpg" style="height: 75px"></td><td class="font-semibold"><h3 style="padding: 0;margin:0 ;">PT. BUMI ISAM MANDIRI</h3></td></tr>
                 <tr><td style="font-size: .9em">Jalan Kehakiman XI No. C-13 Tanah Tinggi</td></tr>
                 <tr><td style="font-size: .9em">Kota Tangerang, Banten - 15119</td></tr>
                 <tr><td style="font-size: .9em">Telp: 0821-2212-1913 Email: info@ptbim.co.id</td></tr>
@@ -60,7 +60,7 @@
         </table>
     </div>
     <h2 class="text-center">SURAT JALAN</h2>
-    <p class="text-center">No : {{ $order["delivery_order"] }}</p>
+    <p class="text-center">No : {{ date_format(date_create($order["print_date"]),"my") }}</p>
     <table border="1" cellspacing="0" cellpadding="5" style="width: 100%">
         <thead>
             <tr>

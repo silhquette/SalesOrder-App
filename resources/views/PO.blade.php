@@ -32,10 +32,11 @@
                             <thead>
                                 <tr class="bg-gradient-to-r from-slate-200 to-slate-200/80">
                                     <th class="p-2">No.</th>
-                                    <th class="p-2">Order Number</th>
-                                    <th class="p-2">Delivery Order</th>
+                                    <th class="p-2">Order Number (ID)</th>
+                                    <th class="p-2">No. PO Cust</th>
+                                    <th class="p-2">Tangal PO Cust</th>
                                     <th class="p-2">Customer</th>
-                                    <th class="p-2">Address</th>
+                                    {{-- <th class="p-2">Address</th> --}}
                                     <th class="p-2">Amount</th>
                                     <th class="p-2">Due On</th>
                                     <th class="p-2">Action</th>
@@ -50,14 +51,15 @@
                                 @foreach ($PO as $purchaseOrder)
                                 <tr class="border-t border-b text-center">
                                     <td class="p-2">{{ $loop->iteration }}</td>
-                                    <td class="p-2">{{ $purchaseOrder->order_number }}</td>
-                                    <td class="p-2">{{ $purchaseOrder->delivery_order }}</td>
+                                    <td class="p-2">{{ $purchaseOrder->order_code }}</td>
+                                    <td class="p-2">{{ $purchaseOrder->nomor_po }}</td>
+                                    <td class="p-2">{{ date_format(date_create($purchaseOrder->tanggal_po),"d M Y") }}</td>
                                     <td class="p-2">{{ $purchaseOrder->customer->name }}</td>
-                                    <td class="p-2">{{ Str::limit($purchaseOrder->customer->address, 10) }}</td>
+                                    {{-- <td class="p-2">{{ Str::limit($purchaseOrder->customer->address, 10) }}</td> --}}
                                     <td class="p-2">Rp. {{ number_format($purchaseOrder->total, 2, ',', '.') }}</td>
                                     <td class="p-2">{{ date_format(date_create($purchaseOrder->due_time),"d M Y") }}</td>
                                     <td class="p-2">
-                                        <button title="details" value="{{ $purchaseOrder->order_number }}" class="show-button"><i class="fa-solid fa-eye hover:text-[#144272] text-[#2C74B3] text-lg px-3"></i></button>
+                                        <button title="details" value="{{ $purchaseOrder->order_code }}" class="show-button"><i class="fa-solid fa-eye hover:text-[#144272] text-[#2C74B3] text-lg px-3"></i></button>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -87,7 +89,7 @@
                             <div class="text-xl text-gray-900 font-semibold">{{ __("Order ") }}<span class="text-[#144272] hover:text-[#2C74B3]">#<span id="order-number-customer">ASKD12SD</span></span></span></div>
                             <div class="text-md text-gray-600" id="term-customer">{{ __("Created at 17 Jul 2023 | Due on 17 Aug 2023") }}</div>
                         </div>
-                        {{-- button cetak --}}
+                        {{-- BUTTON CETAK --}}
                         <div class="flex gap-4 items-center w-2/5">
                             <a href="#" id="print-invoice" target="blank" class="w-full inline-flex justify-center items-center px-4 py-2 bg-gradient-to-r from-[#144272] to-[#2C74B3] border border-transparent rounded-md text-xs text-white tracking-widest hover:bg-[#144272] focus:bg-[#144272] active:bg-[#144272] focus:outline-none focus:ring-2 focus:ring-[#144272] focus:ring-offset-2 transition ease-in-out duration-150">
                                 <i class="fa-solid fa-print mr-2"></i>

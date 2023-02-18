@@ -22,18 +22,25 @@
                         <div class="flex flex-col items-center justify-center mt-4">
                             <div class=" grid grid-cols-2 gap-6 w-2/3 mb-14">
                                 @csrf
-                                <!-- Order Number -->
+                                <!-- Nomor PO -->
                                 <div class="mx-4">
-                                    <x-input-label for="order_number" :value="__('Order Number (Nomor PO)')" class="after:content-['*'] after:ml-0.5 after:text-red-500"/>
-                                    <x-text-input id="order_number" class="block mt-1 w-full" type="text" name="order_number" value="{{ old('order_number') }}" required autofocus/>
-                                    <x-input-error :messages="$errors->get('order_number')" class="mt-2" />
+                                    <x-input-label for="nomor_po" :value="__('Nomor PO')" class="after:content-['*'] after:ml-0.5 after:text-red-500"/>
+                                    <x-text-input id="nomor_po" class="block mt-1 w-full" type="text" name="nomor_po" value="{{ old('nomor_po') }}" required autofocus/>
+                                    <x-input-error :messages="$errors->get('nomor_po')" class="mt-2" />
                                 </div>
                                     
-                                <!-- Delivery Order -->
+                                <!-- Tanggal PO -->
                                 <div class="mx-4">
-                                    <x-input-label for="delivery_order" :value="__('Delivery Order (Nomor surat jalan)')" />
-                                    <x-text-input id="delivery_order" class="block mt-1 w-full text-[#205295]" type="text" value="{{ $uuid }}" :readonly=true name="delivery_order"/>
-                                    <x-input-error :messages="$errors->get('delivery_order')" class="mt-2" />
+                                    <x-input-label for="tanggal_po" :value="__('Tanggal PO')" class="after:content-['*'] after:ml-0.5 after:text-red-500"/>
+                                    <x-text-input id="tanggal_po" class="block mt-1 w-full" type="date" name="tanggal_po" value="{{ old('tanggal_po') }}" required autofocus/>
+                                    <x-input-error :messages="$errors->get('tanggal_po')" class="mt-2" />
+                                </div>
+
+                                <!-- Order Code -->
+                                <div class="mx-4">
+                                    <x-input-label for="order_code" :value="__('Order Code')" />
+                                    <x-text-input id="order_code" class="block mt-1 w-full text-[#205295]" type="text" value="{{ $uuid }}" :readonly=true name="order_code"/>
+                                    <x-input-error :messages="$errors->get('order_code')" class="mt-2" />
                                 </div>
 
                                 <!-- Customer -->
@@ -42,7 +49,7 @@
                                     <x-text-input list="customer-list" id="customer_id" class="block mt-1 w-full" type="text" name="customer_id" value="{{ old('customer_id') }}" required autofocus autocomplete=false/>
                                     <datalist id="customer-list" class="">
                                         @foreach ($customers as $customer)
-                                        <option value="{{ $customer->name }} - {{ $customer->address }}"></option>   
+                                        <option value="{{ $customer->name }} - {{ $customer->address }}">{{ $customer->code }} - {{ $customer->name }} - {{ $customer->address }}</option>   
                                         @endforeach
                                     </datalist>
                                     <x-input-error :messages="$errors->get('customer_id')" class="mt-2" />
@@ -58,7 +65,7 @@
                                         <x-text-input list="product-list" id="product_id" class="block mt-1 w-full" type="text" name="order[{{ $i }}][product_id]" value="{{ old('product_id') }}" required autofocus autocomplete=false :disabled=true/>
                                         <datalist id="product-list" class="">
                                             @foreach ($products as $product)
-                                            <option value="{{ $product->name }} - {{ $product->dimension }}"></option>   
+                                            <option value="{{ $product->name }}">{{ $product->code }} - {{ $product->name }} - {{ $product->dimension }} mm/{{ $product->unit }}</option>   
                                             @endforeach
                                         </datalist>
                                         <x-input-error :messages="$errors->get('product_id')" class="mt-2" />

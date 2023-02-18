@@ -37,6 +37,11 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        $request['code'] = strtoupper($request['code']);
+        $request['name'] = strtoupper($request['name']);
+        $request['dimension'] = strtoupper($request['dimension']);
+        $request['unit'] = strtoupper($request['unit']);
+
         $validated = $request->validate([
             'code' => 'unique:products,code|string|min:4',
             'name' => 'unique:products,name|string|min:4',
@@ -84,6 +89,11 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
+        $request['code'] = strtoupper($request['code']);
+        $request['name'] = strtoupper($request['name']);
+        $request['dimension'] = strtoupper($request['dimension']);
+        $request['unit'] = strtoupper($request['unit']);
+        
         $validated = $request->validate([
             'edit-code' => 'string|min:4',
             'edit-name' => 'string|min:4',

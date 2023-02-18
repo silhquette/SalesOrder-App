@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->integer('term');
             $table->string('address')->unique();
+            $table->string('phone')->nullable();
             $table->string('contact')->nullable();
             $table->string('npwp_add')->nullable();
             $table->uuid('code')->unique();

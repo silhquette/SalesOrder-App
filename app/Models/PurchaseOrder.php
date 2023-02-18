@@ -10,7 +10,7 @@ class PurchaseOrder extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
-    protected $primaryKey = 'order_number';
+    protected $primaryKey = 'order_code';
     protected $with = ['orders','customer'];
     public $incrementing = false;
 

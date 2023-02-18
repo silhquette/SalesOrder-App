@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Invoice_{{ $order["order_number"] }}_{{ $order["customer"]["name"] }}</title>
+    <title>Invoice_{{ $order["order_code"] }}_{{ $order["customer"]["name"] }}</title>
     <style>
         .text-sm {
             font-size: .8em;
@@ -24,13 +24,13 @@
                 </tr>
                 <tr>
                     <td class="font-semibold" style="text-align: center;">No:</td>
-                    <td style="text-align: right;">{{ $order["order_number"] }}</td>
+                    <td style="text-align: right;">{{ date_format(date_create($order["print_date"]),"m-y") }}</td>
                 </tr>
             </tbody>
         </table>
         <table cellspacing="0" style="position:relative;top:0;">
             <tbody>
-                <tr><td rowspan="4" style="padding: 0 1em 0 0"><img src="{{ public_path('test/assets/images/test.jpg') }}" style="height: 75px"></td><td class="font-semibold"><h3 style="padding: 0;margin:0 ;">PT. BUMI ISAM MANDIRI</h3></td></tr>
+                <tr><td rowspan="4" style="padding: 0 1em 0 0"><img src="assets/images/test.jpg" style="height: 75px"></td><td class="font-semibold"><h3 style="padding: 0;margin:0 ;">PT. BUMI ISAM MANDIRI</h3></td></tr>
                 <tr><td style="font-size: .9em">Jalan Kehakiman XI No. C-13 Tanah Tinggi</td></tr>
                 <tr><td style="font-size: .9em">Kota Tangerang, Banten - 15119</td></tr>
                 <tr><td style="font-size: .9em">Telp: 0821-2212-1913 Email: info@ptbim.co.id Website: www.ptbim.co.id</td></tr>
@@ -43,7 +43,7 @@
             <tr>
                 <td>Customer Name:</td>
                 <td>Address:</td>
-                <td>PO NO: <span class="font-semibold">{{ $order["delivery_order"] }}</span></td>
+                <td>PO NO: <span class="font-semibold">{{ date_format(date_create($order["print_date"]),"my") }}</span></td>
             </tr>
             <tr>
                 <td class="font-semibold">{{ $order["customer"]["name"] }}</td>
@@ -92,7 +92,7 @@
         </tbody>
     </table>
     <div style="margin-top:2.5em">
-        <div style="float:right">Tangerang, {{ $now }}</div>
+        <div style="float:right">Tangerang, {{ date_format(date_create($order["print_date"]),"d M Y") }}</div>
         <div class="font-semibold">
             <div>Please remit your payment in full amount to our bank</div>
             <div>Bank Mandiri cab. Tangerang Kisamaun</div>

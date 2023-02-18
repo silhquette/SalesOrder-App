@@ -19,11 +19,13 @@ return new class extends Migration
                 ->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->string('order_number')->unique();
+            $table->string('nomor_po')->unique();
             $table->date('due_time');
+            $table->date('tanggal_po');
+            $table->date('print_date')->nullable();
             $table->integer('total');
             $table->smallInteger('ppn');
-            $table->string('delivery_order')->unique();
+            $table->string('order_code')->unique();
             $table->timestamps();
         });
     }

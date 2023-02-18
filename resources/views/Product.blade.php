@@ -107,7 +107,7 @@
                             <tbody>
                                 @if ($products->isEmpty())
                                     <tr>
-                                        <td colspan="5" class="text-center py-3 text-gray-600">No data.</td>
+                                        <td colspan="6" class="text-center py-3 text-gray-600">No data.</td>
                                     </tr>
                                 @endif
                                 @foreach ($products as $product)

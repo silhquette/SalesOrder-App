@@ -24,7 +24,7 @@ class PurchaseOrderController extends Controller
     public function index()
     {
         return view('PO', [
-            'PO' => PurchaseOrder::all()
+            'PO' => PurchaseOrder::latest()->get()
         ]);
     }
 
@@ -35,8 +35,22 @@ class PurchaseOrderController extends Controller
      */
     public function create()
     {
+        $year_month = Carbon::now()->format('Y') . '_' . Carbon::now()->format('m');
+        $nomor_urut = PurchaseOrder::select('order_code')->where('created_at', 'like', $year_month . '%')->limit(1)->get();
+        if (count($nomor_urut) == 0) {
+            $nomor_urut = '001';
+        } else {
+            $nomor_urut = (int)substr($nomor_urut[0]->order_code, -2);
+            $nomor_urut += 1;
+            if ($nomor_urut <10) {
+                $nomor_urut = '00' . $nomor_urut;
+            } elseif ($nomor_urut <100) {
+                $nomor_urut = '0' . $nomor_urut;
+            }
+        }
+
         return view('CreatePO', [
-            'uuid' => 'SJ-' . Str::limit(Str::uuid(),8,''),
+            'uuid' => Carbon::now()->format('y') . Carbon::now()->format('m') . $nomor_urut,
             'customers' => Customer::select(['name','code','id','address'])->get(),
             'products' => Product::all()
         ]);
@@ -64,18 +78,18 @@ class PurchaseOrderController extends Controller
         // table insert for purchase order
         $validatedPO = $request->validate([
             'customer_id' => 'exists:customers,id',
-            'order_number' => 'unique:purchase_orders,order_number',
+            'nomor_po' => 'unique:purchase_orders,nomor_po',
             'total' => '',
             'ppn' => '',
-            'delivery_order' => 'unique:purchase_orders,delivery_order',
+            'order_code' => 'unique:purchase_orders,order_code',
             'due_time' => 'date',
+            'tanggal_po' => 'date',
         ]);
 
         PurchaseOrder::create($validatedPO);
 
         $PurchaseID = PurchaseOrder::latest()->get()[0]['id'];
         foreach ($request['order'] as $key => $order) {
-            $order['product_id'] = explode(' - ', $order['product_id'])[0];
             $order['product_id'] = Product::select(['id'])
                 ->where('name', '=', $order['product_id'])
                 ->get()[0]
@@ -134,7 +148,15 @@ class PurchaseOrderController extends Controller
                 'keterangan' => $request->keterangan[$i]
             ]);
         }
-        return redirect()->route('order.Suratjalan', $order->order_number);
+
+        $validatedDate = $request->validate([
+            'print_date' => 'date'
+        ]);
+        $order->update([
+            'print_date' => $validatedDate['print_date']
+        ]);
+
+        return redirect()->route('order.Suratjalan', $order->order_code);
     }
 
     /**
@@ -151,10 +173,10 @@ class PurchaseOrderController extends Controller
 
     public function printSuratJalan(PurchaseOrder $order)
     {
+
         $datas = [
             'order' => $order->toArray(),
             'total_product' => 0,
-            'now' =>  date_format(date_create(Carbon::now()),"d F Y")
         ];
         $pdf = PDF::loadview('SuratJalan_PDF', $datas)->setPaper('a4', 'potrait');
 	    return $pdf->stream();
@@ -165,7 +187,6 @@ class PurchaseOrderController extends Controller
         $datas = [
             'order' => $order->toArray(),
             'subtotal' => 0,
-            'now' => date_format(date_create(Carbon::now()), "d/m/Y"),
         ];
         $pdf = PDF::loadview('Invoice_PDF', $datas)->setPaper('a4', 'potrait');
 	    return $pdf->stream();
@@ -189,7 +210,7 @@ class PurchaseOrderController extends Controller
         $purchaseOrder = PurchaseOrder::all();
         if ($request->keyword != '') {
             $purchaseOrder = PurchaseOrder::where('order_number', 'LIKE', '%' . $request->keyword . '%')
-                ->orwhere('delivery_order', 'LIKE', '%' . $request->keyword . '%')
+                ->orwhere('order_code', 'LIKE', '%' . $request->keyword . '%')
                 ->orWhereHas('customer', function($query){
                     global $request;
                     $query->where('name', 'LIKE', '%' . $request->keyword . '%');  

@@ -20,16 +20,16 @@ function load_js() {
             const DUE = DateFormat(data.due_time);
 
             $("#detail-wrap").show();
-            $("#order-number-customer").html(data.order_number);
+            $("#order-number-customer").html(data.order_code);
             $("#term-customer").html(`Created at ${CREATED} | Due on  ${DUE}`);
             $("#nama-customer").html(data.customer.name);
             $("#npwp-customer").html(data.customer.npwp);
             $("#alamat-customer").html(data.customer.address);
             $("#kontak-customer").html(data.customer.contact ? data.customer.contact : "-");
             $("#email-customer").html(data.customer.email ? data.customer.email : "-");
-            $("#delete-button").val(data.order_number);
-            $("#print-surat-jalan").attr("href", "/order/surat-jalan/" + data.order_number);
-            $("#print-invoice").attr("href", "/order/print-invoice/" + data.order_number);
+            $("#delete-button").val(data.order_code);
+            $("#print-surat-jalan").attr("href", "/order/surat-jalan/" + data.order_code);
+            $("#print-invoice").attr("href", "/order/print-invoice/" + data.order_code);
 
             let htmlView = "";
             let sub_total = 0;
@@ -115,14 +115,14 @@ function tableRows(response) {
             `
             <tr class="border-t border-b text-center">
                 <td class="p-2">` + (i+1) + `</td>
-                <td class="p-2">` + response.purchaseOrder[i].order_number + `</td>
+                <td class="p-2">` + response.purchaseOrder[i].order_code + `</td>
                 <td class="p-2">` + response.purchaseOrder[i].delivery_order + `</td>
                 <td class="p-2">` + response.purchaseOrder[i].customer.name + `</td>
                 <td class="p-2">` + response.purchaseOrder[i].customer.address.slice(0, 10) + (response.purchaseOrder[i].customer.address.length > 18 ? "..." : "") + `</td>
                 <td class="p-2">` + toRupiah(response.purchaseOrder[i].total, {spaceBeforeUnit: true}) + `</td>
                 <td class="p-2">` + DateFormat(response.purchaseOrder[i].due_time) + `</td>
                 <td class="p-2">
-                    <button value="` + response.purchaseOrder[i].order_number + `" class="show-button"><i class="fa-solid fa-eye hover:text-[#144272] text-[#2C74B3] text-lg px-3"></i></button>
+                    <button value="` + response.purchaseOrder[i].order_code + `" class="show-button"><i class="fa-solid fa-eye hover:text-[#144272] text-[#2C74B3] text-lg px-3"></i></button>
                 </td>
             </tr>
             `;
