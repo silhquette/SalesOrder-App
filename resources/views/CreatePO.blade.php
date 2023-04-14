@@ -24,7 +24,7 @@
                                 @csrf
                                 <!-- Nomor PO -->
                                 <div class="mx-4">
-                                    <x-input-label for="nomor_po" :value="__('Nomor PO')" class="after:content-['*'] after:ml-0.5 after:text-red-500"/>
+                                    <x-input-label for="nomor_po" :value="__('Nomor PO Customer')" class="after:content-['*'] after:ml-0.5 after:text-red-500"/>
                                     <x-text-input id="nomor_po" class="block mt-1 w-full" type="text" name="nomor_po" value="{{ old('nomor_po') }}" required autofocus/>
                                     <x-input-error :messages="$errors->get('nomor_po')" class="mt-2" />
                                 </div>
@@ -38,7 +38,7 @@
 
                                 <!-- Order Code -->
                                 <div class="mx-4">
-                                    <x-input-label for="order_code" :value="__('Order Code')" />
+                                    <x-input-label for="order_code" :value="__('Sales Order Code')" />
                                     <x-text-input id="order_code" class="block mt-1 w-full text-[#205295]" type="text" value="{{ $uuid }}" :readonly=true name="order_code"/>
                                     <x-input-error :messages="$errors->get('order_code')" class="mt-2" />
                                 </div>

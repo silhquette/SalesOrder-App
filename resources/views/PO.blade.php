@@ -55,7 +55,6 @@
                                     <td class="p-2">{{ $purchaseOrder->nomor_po }}</td>
                                     <td class="p-2">{{ date_format(date_create($purchaseOrder->tanggal_po),"d M Y") }}</td>
                                     <td class="p-2">{{ $purchaseOrder->customer->name }}</td>
-                                    {{-- <td class="p-2">{{ Str::limit($purchaseOrder->customer->address, 10) }}</td> --}}
                                     <td class="p-2">Rp. {{ number_format($purchaseOrder->total, 2, ',', '.') }}</td>
                                     <td class="p-2">{{ date_format(date_create($purchaseOrder->due_time),"d M Y") }}</td>
                                     <td class="p-2">
@@ -81,7 +80,7 @@
     {{-- DETAILS --}}
     <div id="detail-wrap" class="hidden">
         <div class="fixed top-0 left-0 right-0 bottom-0 bg-black/70"></div>
-        <div class="fixed top-1/2 left-1/2 bg-white overflow-hidden shadow-sm sm:rounded-lg -translate-x-1/2 -translate-y-1/2 wk-[56rem] w-2/3">
+        <div class="fixed top-1/2 left-1/2 bg-white overflow-hidden shadow-sm sm:rounded-lg -translate-x-1/2 -translate-y-1/2 wk-[56rem] 2xl:w-2/3 w-5/6">
             <div class="p-6">
                 <div class="mb-3">
                     <div class="flex justify-between items-center">
@@ -89,18 +88,7 @@
                             <div class="text-xl text-gray-900 font-semibold">{{ __("Order ") }}<span class="text-[#144272] hover:text-[#2C74B3]">#<span id="order-number-customer">ASKD12SD</span></span></span></div>
                             <div class="text-md text-gray-600" id="term-customer">{{ __("Created at 17 Jul 2023 | Due on 17 Aug 2023") }}</div>
                         </div>
-                        {{-- BUTTON CETAK --}}
-                        <div class="flex gap-4 items-center w-2/5">
-                            <a href="#" id="print-invoice" target="blank" class="w-full inline-flex justify-center items-center px-4 py-2 bg-gradient-to-r from-[#144272] to-[#2C74B3] border border-transparent rounded-md text-xs text-white tracking-widest hover:bg-[#144272] focus:bg-[#144272] active:bg-[#144272] focus:outline-none focus:ring-2 focus:ring-[#144272] focus:ring-offset-2 transition ease-in-out duration-150">
-                                <i class="fa-solid fa-print mr-2"></i>
-                                {{ __('Cetak Invoice') }}
-                            </a>
-                            <a href="#" id="print-surat-jalan" target="blank" class="w-full inline-flex justify-center items-center px-4 py-2 bg-gradient-to-r from-[#144272] to-[#2C74B3] border border-transparent rounded-md text-xs text-white tracking-widest hover:bg-[#144272] focus:bg-[#144272] active:bg-[#144272] focus:outline-none focus:ring-2 focus:ring-[#144272] focus:ring-offset-2 transition ease-in-out duration-150">
-                                <i class="fa-solid fa-print mr-2"></i>
-                                {{ __('Cetak Surat Jalan') }}
-                            </a>
-                            <a href="#" id="detail-close"><i class="fa-solid fa-xmark text-2xl mr-2" id="edit-close"></i></a>
-                        </div>
+                        <a href="#" id="detail-close"><i class="fa-solid fa-xmark text-2xl mr-6" id="edit-close"></i></a>
                     </div>
                 </div>
                 <hr>
@@ -146,14 +134,50 @@
                     <div class="text-lg text-gray-900 font-semibold">{{ __("Customer Details") }}</div>
                     <div class="flex">
                         <div class="grid grid-cols-3 gap-2 mt-2 w-2/3">
-                            <div><i class="text-[#144272] inline-block w-8 fa-solid fa-user"></i><span id="nama-customer">Nama Customer</span></div>
-                            <div><i class="text-[#144272] inline-block w-8 fa-sharp fa-solid fa-location-dot"></i><span id="alamat-customer">Jalan Perumahan Baru</span></div>
-                            <div><i class="text-[#144272] inline-block w-8 fa-solid fa-envelope"></i><span id="email-customer">Perusahaan@gmail.com</span></div>
-                            <div><i class="text-[#144272] inline-block w-8 fa-solid fa-credit-card"></i><span id="npwp-customer">1231231</span></div>
-                            <div><i class="text-[#144272] inline-block w-8 fa-solid fa-phone"></i><span id="kontak-customer">08123091283</span></div>
+                            <div>
+                                <span class="text-sm text-slate-600">Customer Name</span>
+                                <div class="flex items-start">
+                                    <i class="text-[#144272] inline-block w-8 pt-1 fa-solid fa-user"></i>
+                                    <span id="nama-customer">Nama Customer</span>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="text-sm text-slate-600">Address</span>
+                                <div class="flex items-start">
+                                    <i class="text-[#144272] inline-block w-8 pt-1 fa-sharp fa-solid fa-location-dot"></i>
+                                    <span id="alamat-customer" class="basis-full">Jalan Perumahan Baru</span>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="text-sm text-slate-600">Email</span>
+                                <div class="flex items-start">
+                                    <i class="text-[#144272] inline-block w-8 pt-1 fa-solid fa-envelope"></i>
+                                    <span id="email-customer">Perusahaan@gmail.com</span>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="text-sm text-slate-600">Customer NPWP</span>
+                                <div class="flex items-start">
+                                    <i class="text-[#144272] inline-block w-8 pt-1 fa-solid fa-credit-card"></i>
+                                    <span id="npwp-customer">1231231</span>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="text-sm text-slate-600">Customer Phone</span>
+                                <div class="flex items-start">
+                                    <i class="text-[#144272] inline-block w-8 pt-1 fa-solid fa-phone"></i>
+                                    <span id="kontak-customer">08123091283</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="flex items-center w-1/3 justify-end">
-                            <x-secondary-button class="w-1/3 mx-5" id="delete-button">
+                        <div class="flex flex-col items-center w-1/3 gap-6 justify-center">
+                            {{-- BUTTON CETAK --}}
+                            <a href="#" id="print-document" target="blank" class="w-full inline-flex justify-center items-center mx-5 py-2 bg-gradient-to-r from-[#144272] to-[#2C74B3] border border-transparent rounded-md text-xs text-white tracking-widest hover:bg-[#144272] focus:bg-[#144272] active:bg-[#144272] focus:outline-none focus:ring-2 focus:ring-[#144272] focus:ring-offset-2 transition ease-in-out duration-150">
+                                <i class="fa-solid fa-print mr-2"></i>
+                                {{ __('Cetak Doumen') }}
+                            </a>
+                            {{-- DELETE BUTTON --}}
+                            <x-secondary-button class="w-full mx-5" id="delete-button">
                                 {{ __('Delete') }}
                                 <i class="fa-solid fa-trash hover:text-[#144272] text-[#2C74B3] text-lg pl-3"></i>
                             </x-secondary-button>

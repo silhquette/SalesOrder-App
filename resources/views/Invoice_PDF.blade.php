@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Invoice_{{ $order["order_code"] }}_{{ $order["customer"]["name"] }}</title>
+    <title>Invoice_{{ $purchase_order["order_code"] }}_{{ $purchase_order["customer"]["name"] }}</title>
     <style>
         .text-sm {
             font-size: .8em;
@@ -24,7 +24,7 @@
                 </tr>
                 <tr>
                     <td class="font-semibold" style="text-align: center;">No:</td>
-                    <td style="text-align: right;">{{ date_format(date_create($order["print_date"]),"m-y") }}</td>
+                    <td style="text-align: right;">{{ date_format(date_create($print_date),"m-y") . $document_number }}</td>
                 </tr>
             </tbody>
         </table>
@@ -43,12 +43,12 @@
             <tr>
                 <td>Customer Name:</td>
                 <td>Address:</td>
-                <td>PO NO: <span class="font-semibold">{{ date_format(date_create($order["print_date"]),"my") }}</span></td>
+                <td>PO NO: <span class="font-semibold">{{ date_format(date_create($print_date),"my") }} - {{ $document_number }}</span></td>
             </tr>
             <tr>
-                <td class="font-semibold">{{ $order["customer"]["name"] }}</td>
-                <td class="font-semibold" style="width: 300px">{{ $order["customer"]["address"] }}</td>
-                <td>Term of payment: <span class="font-semibold">{{ $order["customer"]["term"] }} days</span></td>
+                <td class="font-semibold">{{ $purchase_order["customer"]["name"] }}</td>
+                <td class="font-semibold" style="width: 300px">{{ $purchase_order["customer"]["address"] }}</td>
+                <td>Term of payment: <span class="font-semibold">{{ $purchase_order["customer"]["term"] }} days</span></td>
             </tr>
         </tbody>
     </table>
@@ -64,16 +64,16 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($order["orders"] as $row)
+            @foreach ($selected_order as $row)
             <tr>
-                <td style="text-align: center">{{ $row["qty"] }}</td>
-                <td style="text-align: center">{{ $row["product"]["unit"] }}</td>
-                <td><span class=" font-semibold">{{ $row["product"]["name"] }}</span><br>{{ $row["product"]["dimension"] }}</td>
-                <td>Rp. {{ number_format($row["price"], 2, ',', '.') }}</td>
-                <td>Rp. {{ number_format($row["amount"], 2, ',', '.') }}</td>
+                <td style="text-align: center">{{ $row["order"]["qty"] }}</td>
+                <td style="text-align: center">{{ $row["order"]["product"]["unit"] }}</td>
+                <td><span class=" font-semibold">{{ $row["order"]["product"]["name"] }}</span><br>{{ $row["order"]["product"]["dimension"] }}</td>
+                <td>Rp. {{ number_format($row["order"]["price"], 2, ',', '.') }}</td>
+                <td>Rp. {{ number_format($row["order"]["amount"], 2, ',', '.') }}</td>
             </tr>
             @php
-                $subtotal += $row["amount"]
+                $subtotal += $row["order"]["amount"]
             @endphp
             @endforeach
             <tr>
@@ -82,17 +82,17 @@
                 <td>Rp. {{ number_format($subtotal, 2, ',', '.') }}</td>
             </tr>
             <tr>
-                <td>VAT {{ $order["ppn"] }}%</td>
+                <td>VAT {{ $purchase_order["ppn"] }}%</td>
                 <td>Rp. {{ number_format((0.11*$subtotal), 2, ',', '.') }}</td>
             </tr>
             <tr>
                 <td>Total</td>
-                <td>Rp. {{ number_format($order["total"], 2, ',', '.') }}</td>
+                <td>Rp. {{ number_format($purchase_order["total"], 2, ',', '.') }}</td>
             </tr>
         </tbody>
     </table>
     <div style="margin-top:2.5em">
-        <div style="float:right">Tangerang, {{ date_format(date_create($order["print_date"]),"d M Y") }}</div>
+        <div style="float:right">Tangerang, {{ date_format(date_create($print_date),"d M Y") }}</div>
         <div class="font-semibold">
             <div>Please remit your payment in full amount to our bank</div>
             <div>Bank Mandiri cab. Tangerang Kisamaun</div>

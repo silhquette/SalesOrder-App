@@ -28,8 +28,7 @@ function load_js() {
             $("#kontak-customer").html(data.customer.contact ? data.customer.contact : "-");
             $("#email-customer").html(data.customer.email ? data.customer.email : "-");
             $("#delete-button").val(data.order_code);
-            $("#print-surat-jalan").attr("href", "/order/surat-jalan/" + data.order_code);
-            $("#print-invoice").attr("href", "/order/print-invoice/" + data.order_code);
+            $("#print-document").attr("href", "/doc/generate/" + data.order_code);
 
             let htmlView = "";
             let sub_total = 0;
@@ -43,7 +42,7 @@ function load_js() {
                         <span class="text-gray-600 text-sm">${value.product.code}</span>
                     </td>
                     <td>${toRupiah(value.price, {spaceBeforeUnit: true})}</td>
-                    <td>${value.qty}</td>
+                    <td>${value.qty} ${value.product.unit}</td>
                     <td>disc ${value.discount}%<i class="fa-solid fa-tag ml-2"></i></td>
                     <td>${toRupiah(value.amount, {spaceBeforeUnit: true})}</td>
                 </tr>`;
@@ -74,6 +73,7 @@ function load_js() {
     });
 } load_js();
 
+// CREATE DATE FORMAT
 function DateFormat(date) {
     let new_date = new Date(date);
     const YE = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(new_date);
@@ -97,7 +97,8 @@ function search() {
             keyword: keyword,
         },
         function (data) {
-            tableRows(data); 
+            tableRows(data);
+            console.log(data);
         }
     );
 }
@@ -116,9 +117,9 @@ function tableRows(response) {
             <tr class="border-t border-b text-center">
                 <td class="p-2">` + (i+1) + `</td>
                 <td class="p-2">` + response.purchaseOrder[i].order_code + `</td>
-                <td class="p-2">` + response.purchaseOrder[i].delivery_order + `</td>
+                <td class="p-2">` + response.purchaseOrder[i].nomor_po + `</td>
+                <td class="p-2">` + DateFormat(response.purchaseOrder[i].tanggal_po) + `</td>
                 <td class="p-2">` + response.purchaseOrder[i].customer.name + `</td>
-                <td class="p-2">` + response.purchaseOrder[i].customer.address.slice(0, 10) + (response.purchaseOrder[i].customer.address.length > 18 ? "..." : "") + `</td>
                 <td class="p-2">` + toRupiah(response.purchaseOrder[i].total, {spaceBeforeUnit: true}) + `</td>
                 <td class="p-2">` + DateFormat(response.purchaseOrder[i].due_time) + `</td>
                 <td class="p-2">

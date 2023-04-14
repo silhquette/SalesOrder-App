@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Konfirmasi Surat Jalan') }}
+            {{ __('Cetak Dokumen') }}
         </h2>
     </x-slot>
     
@@ -14,7 +14,7 @@
                     @method('PATCH')
                 <div class="p-6 text-gray-900 flex items-center flex-col">
                     <div class="flex justify-between mb-3">
-                        <span class="text-xl">{{ __("Konfirmasi") }}</span>
+                        <span class="text-xl">{{ __("Additonal Informations") }}</span>
                     </div>
                     <div class="my-3 w-full overflow-auto">
                         <div class="text-lg text-gray-900 font-semibold">{{ __("Ordered Items") }}</div>
@@ -24,7 +24,8 @@
                                 <tbody id="ordered-item">
                                     @foreach ($purchaseOrder->orders as $order)
                                         <tr class="text-center">
-                                            <td id="product" class="text-left pl-16">
+                                            <td class="w-24"><input type="checkbox" name="order[{{ $loop ->index}}][order_id]" class="rounded-sm cursor-pointer" value="{{ $order->id }}" checked></td>
+                                            <td id="product" class="text-left w-80">
                                                 <div class="text-lg font-semibold">{{ $order->product->name }}</div>
                                                 <div class="text-sm">{{ $order->product->dimension }}</div>
                                                 <span class="text-gray-600 text-sm">{{ $order->product->code }}</span>
@@ -66,7 +67,7 @@
                         </div>
                     </div>
                     <div class="my-3 w-full">
-                        <div class="text-lg text-gray-900 font-semibold">{{ __("Input Tanggal") }}</div>
+                        <div class="text-lg text-gray-900 font-semibold">{{ __("Date Input") }}</div>
                         <div class="text-sm text-gray-600" id="item-summary">{{ __("Tanggal cetak surat jalan dan invoice") }}</div>
                         
                         <div class="mx-4 mt-4 w-1/2 min-w-min">
@@ -75,8 +76,8 @@
                         </div>
                     </div>
                 </div>
-                <x-primary-button class="w-1/3 relative left-1/2 -translate-x-1/2 mb-4">
-                    {{ __('Input Data') }}
+                <x-primary-button class="w-1/3 relative left-1/2 -translate-x-1/2 mb-4" id="generate-button">
+                    {{ __('Generate Document') }}
                 </x-primary-button>
                 </form>
             </div>
@@ -86,10 +87,13 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-8">
                 <div class="p-6 text-gray-900 flex items-center flex-col">
                     <div class="flex justify-between mb-6">
-                        <span class="text-xl">{{ __("Cetak Surat Jalan") }}</span>
+                        <span class="text-xl">{{ __("PDF Preview") }}</span>
                     </div>
                     {{-- PREVIEW PDF --}}
-                    <iframe id="preview" width="80%" src="" height="700px" class=" rounded-md"></iframe>
+                    <div class="flex w-full gap-4">
+                        <iframe id="surat-jalan-preview" width="50%" src="" height="700px" class=" rounded-md"></iframe>
+                        <iframe id="invoice-preview" width="50%" src="" height="700px" class=" rounded-md"></iframe>
+                    </div>
                 </div>
             </div>
         </div>

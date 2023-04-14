@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Surat Jalan-{{ $order["order_code"] }}-{{ $order["customer"]["name"] }}</title>
+    <title>Surat Jalan-{{ $purchase_order["order_code"] }}-{{ $purchase_order["customer"]["name"] }}</title>
     <style>
         .text-center {
             text-align: center
@@ -35,16 +35,16 @@
             <tbody>
                 <tr>
                     <td class="font-semibold">Tanggal:</td>
-                    <td>{{ date_format(date_create($order["print_date"]),"d M Y") }}</td>
+                    <td>{{ date_format(date_create($print_date),"d M Y") }}</td>
                 </tr>
                 <tr>
                     <td class="font-semibold">Kepada:</td>
                     <td>
                         <div class="font-semibold" style="padding-left: .25em">
-                            {{ $order["customer"]["name"] }}
+                            {{ $purchase_order["customer"]["name"] }}
                         </div>
                         <div class="text-sm" style="padding-left: .25em">
-                            {{ $order["customer"]["address"] }}
+                            {{ $purchase_order["customer"]["address"] }}
                         </div>
                     </td>
                 </tr>
@@ -60,7 +60,7 @@
         </table>
     </div>
     <h2 class="text-center">SURAT JALAN</h2>
-    <p class="text-center">No : {{ date_format(date_create($order["print_date"]),"my") }}</p>
+    <p class="text-center">No : {{ date_format(date_create($print_date),"my") }} - {{ $document_number }}</p>
     <table border="1" cellspacing="0" cellpadding="5" style="width: 100%">
         <thead>
             <tr>
@@ -72,15 +72,15 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($order["orders"] as $order)
+            @foreach ($selected_order as $selected_order)
             <tr>
                 <td class="text-center">{{ $loop->iteration }}</td>
-                <td><span class="font-semibold">{{ $order["product"]["name"] }}</span><br>{{ $order["product"]["dimension"] }}</td>
-                <td class="text-center">{{ $order["qty"] }}</td>
-                <td class="text-center">{{ $order["product"]["unit"] }}</td>
-                <td>{{ $order["keterangan"] }}</td>
+                <td><span class="font-semibold">{{ $selected_order["order"]["product"]["name"] }}</span><br>{{ $selected_order["order"]["product"]["dimension"] }}</td>
+                <td class="text-center">{{ $selected_order["order"]["qty"] }}</td>
+                <td class="text-center">{{ $selected_order["order"]["product"]["unit"] }}</td>
+                <td>{{ $selected_order["order"]["keterangan"] }}</td>
                 @php
-                    $total_product += $order["qty"]
+                    $total_product += $selected_order["order"]["qty"]
                 @endphp
             </tr>
             @endforeach

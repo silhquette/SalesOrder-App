@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
+use function PHPUnit\Framework\isEmpty;
+
 class ProductController extends Controller
 {
     /**
@@ -116,12 +118,16 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        $product->delete();
-        return redirect()->route('product.index')->with('productSuccess', 'Data produk berhasil dihapus');
+        if (count($product->orders)) {
+            return redirect()->route('product.index')->with('DeleteFailed', 'Data produk masih tercantum pada order');
+        } else {
+            $product->delete();
+            return redirect()->route('product.index')->with('DeleteSuccess', 'Data produk berhasil dihapus');
+        }
     }
 
     /**
-     * Search data in database.
+     * Search the specified dataset in database.
      *
      * @param  \App\Http\Request  $request
      * @return \Illuminate\Http\Response

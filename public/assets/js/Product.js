@@ -55,7 +55,7 @@ function tableRows(response) {
                 <td class="p-2">` +
                 response.product[i].code +
                 `</td>
-                <td class="p-2">` +
+                <td class="p-2 w-80">` +
                 response.product[i].name +
                 `</td>
                 <td class="p-2">` +

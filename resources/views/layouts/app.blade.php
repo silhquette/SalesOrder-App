@@ -44,8 +44,8 @@
             @if (request()->routeIs('customer*'))
                 <script src="{{ asset('assets/js/Customer.js') }}"></script>
             @endif
-            @if (request()->routeIs('order.Suratjalan'))
-                <script src="{{ asset('assets/js/SuratJalan.js') }}"></script>
+            @if (request()->routeIs('document.generate'))
+                <script src="{{ asset('assets/js/Document.js') }}"></script>
             @endif
             @if (request()->routeIs('order*'))
                 <script src="{{ asset('assets/js/POCreate.js') }}"></script>

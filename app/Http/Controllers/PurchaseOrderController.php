@@ -9,10 +9,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 use App\Models\Customer;
+use App\Models\Document;
 use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Support\Facades\Validator;
-use Barryvdh\DomPDF\Facade\Pdf as PDF;
 
 class PurchaseOrderController extends Controller
 {
@@ -36,7 +36,7 @@ class PurchaseOrderController extends Controller
     public function create()
     {
         $year_month = Carbon::now()->format('Y') . '_' . Carbon::now()->format('m');
-        $nomor_urut = PurchaseOrder::select('order_code')->where('created_at', 'like', $year_month . '%')->limit(1)->get();
+        $nomor_urut = PurchaseOrder::select('order_code')->where('created_at', 'like', $year_month . '%')->latest()->limit(1)->get();
         if (count($nomor_urut) == 0) {
             $nomor_urut = '001';
         } else {
@@ -64,18 +64,20 @@ class PurchaseOrderController extends Controller
      */
     public function store(StorePurchaseOrderRequest $request)
     {
+        // Get customer_id
         $request['customer_id'] = explode(' - ', $request->customer_id)[1];
         $request['customer_id'] = Customer::select(['id'])
             ->where('address', '=', $request['customer_id'])
             ->get()[0]
             ->id;
-        
+        // Get term of payment date
         $term = Customer::select(['term'])->where('id', '=', $request['customer_id'])->get()[0]['term'];
         $request['due_time'] = Carbon::now()
             ->addDays($term)
             ->format('Y-m-d');
 
-        // table insert for purchase order
+        // Table insert for purchase order
+        $request['nomor_po'] = strtoupper($request['nomor_po']);
         $validatedPO = $request->validate([
             'customer_id' => 'exists:customers,id',
             'nomor_po' => 'unique:purchase_orders,nomor_po',
@@ -88,6 +90,7 @@ class PurchaseOrderController extends Controller
 
         PurchaseOrder::create($validatedPO);
 
+        // Table insert for order
         $PurchaseID = PurchaseOrder::latest()->get()[0]['id'];
         foreach ($request['order'] as $key => $order) {
             $order['product_id'] = Product::select(['id'])
@@ -97,7 +100,7 @@ class PurchaseOrderController extends Controller
 
             $order['purchase_order_id'] = $PurchaseID;
 
-            // array validation
+            // Array validation
             Validator::make(
                 $order,
                 [
@@ -108,7 +111,33 @@ class PurchaseOrderController extends Controller
 
             Order::create($order);
         }
-            
+
+        // Generate document number
+        $prev_doc = Document::select(['month','document_number'])->latest()->get();
+        if (count($prev_doc)) {
+            $doc_number = (int)$prev_doc[0]['document_number'] + 1;
+        } else {
+            $doc_number = 1;
+        }
+        
+        // Generate month and year
+        $doc_month = Carbon::parse($request['print_date'])->month;
+        $doc_year = Carbon::parse($request['print_date'])->year;
+        
+        // Table insert for Document
+        $newest_order = PurchaseOrder::latest()->limit(1)->get()[0]['orders'];
+        foreach ($newest_order as $selected_order) {
+            $data = [
+                'order_id' => $selected_order["id"],
+                'document_number' => $doc_number,
+                'month' => $doc_month,
+                'year' => $doc_year,
+                'print_date' => Carbon::now()
+            ];
+
+            Document::create($data);
+        }
+        
         return redirect()->route('order.create')->with('success', 'Data sales order berhasil ditambahkan kedalam daftar');
     }
 
@@ -129,7 +158,7 @@ class PurchaseOrderController extends Controller
      * @param  \App\Models\PurchaseOrder  $purchaseOrder
      * @return \Illuminate\Http\Response
      */
-    public function edit(PurchaseOrder $purchaseOrder)
+    public function edit(PurchaseOrder $order)
     {
         //
     }
@@ -143,20 +172,43 @@ class PurchaseOrderController extends Controller
      */
     public function update(UpdatePurchaseOrderRequest $request, PurchaseOrder $order)
     {
+        // Update field keterangan
         for ($i=0; $i < count($request->keterangan); $i++) { 
             Order::find($request->id[$i])->update([
                 'keterangan' => $request->keterangan[$i]
             ]);
         }
 
+        // Validasi date input
         $validatedDate = $request->validate([
             'print_date' => 'date'
         ]);
-        $order->update([
-            'print_date' => $validatedDate['print_date']
-        ]);
+            
+        // generate document number
+        $prev_doc = Document::select(['month','document_number'])->latest()->get();
+        if (count($prev_doc)) {
+            $doc_number = (int)$prev_doc[0]['document_number'] + 1;
+        } else {
+            $doc_number = 1;
+        }
 
-        return redirect()->route('order.Suratjalan', $order->order_code);
+        // generate month and year
+        $doc_month = Carbon::parse($request['print_date'])->month;
+        $doc_year = Carbon::parse($request['print_date'])->year;
+        // Table insert for Document
+        foreach ($request->order as $selected_order) {
+            $data = [
+                'order_id' => $selected_order["order_id"],
+                'document_number' => $doc_number,
+                'month' => $doc_month,
+                'year' => $doc_year,
+                'print_date' => $validatedDate['print_date']
+            ];
+
+            Document::create($data);
+        }
+
+        return redirect()->route('document.generate', $order->order_code);
     }
 
     /**
@@ -171,36 +223,8 @@ class PurchaseOrderController extends Controller
         return redirect()->route('order.index')->with('deleteSuccess', 'Data Sales Order berhasil dihapus');
     }
 
-    public function printSuratJalan(PurchaseOrder $order)
-    {
-
-        $datas = [
-            'order' => $order->toArray(),
-            'total_product' => 0,
-        ];
-        $pdf = PDF::loadview('SuratJalan_PDF', $datas)->setPaper('a4', 'potrait');
-	    return $pdf->stream();
-    }
-
-    public function printInvoice(PurchaseOrder $order)
-    {
-        $datas = [
-            'order' => $order->toArray(),
-            'subtotal' => 0,
-        ];
-        $pdf = PDF::loadview('Invoice_PDF', $datas)->setPaper('a4', 'potrait');
-	    return $pdf->stream();
-    }
-
-    public function showSuratJalan(PurchaseOrder $order) {
-        return view('showSuratJalan', [
-            'purchaseOrder' => $order,
-            'subtotal' => 0
-        ]);
-    }
-
     /**
-     * Search data in database.
+     * Search specified dataset in database.
      *
      * @param  \App\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -210,7 +234,7 @@ class PurchaseOrderController extends Controller
         $purchaseOrder = PurchaseOrder::all();
         if ($request->keyword != '') {
             $purchaseOrder = PurchaseOrder::where('order_number', 'LIKE', '%' . $request->keyword . '%')
-                ->orwhere('order_code', 'LIKE', '%' . $request->keyword . '%')
+                ->orwhere('order_number', 'LIKE', '%' . $request->keyword . '%')
                 ->orWhereHas('customer', function($query){
                     global $request;
                     $query->where('name', 'LIKE', '%' . $request->keyword . '%');  

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PurchaseOrderController;
 use App\Models\PurchaseOrder;
@@ -33,10 +34,10 @@ Route::resource('order', PurchaseOrderController::class)->middleware(['auth', 'v
 Route::post('/product/search', [ProductController::class, 'search'])->name('product.search');
 Route::post('/customer/search', [CustomerController::class, 'search'])->name('customer.search');
 Route::post('/order/search', [PurchaseOrderController::class, 'search'])->name('order.search');
-Route::group(['prefix'=>'/order'], function (){
-    Route::get('/print-surat-jalan/{order}', [PurchaseOrderController::class, 'printSuratJalan'])->name('printSuratjalan');
-    Route::get('/print-invoice/{order}', [PurchaseOrderController::class, 'printInvoice'])->name('printInvoice');
-    Route::get('/surat-jalan/{order}', [PurchaseOrderController::class, 'showSuratJalan'])->name('order.Suratjalan');
+Route::group(['prefix'=>'/doc'], function (){
+    Route::get('/print-surat-jalan/{order}', [DocumentController::class, 'printSuratJalan'])->name('printSuratjalan');
+    Route::get('/print-invoice/{order}', [DocumentController::class, 'printInvoice'])->name('printInvoice');
+    Route::get('/generate/{order}', [DocumentController::class, 'show'])->name('document.generate');
 });
 
 Route::middleware('auth')->group(function () {

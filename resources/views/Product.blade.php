@@ -1,11 +1,21 @@
 <x-app-layout>
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            @if ($message = Session::get('productSuccess'))
+            @if ($message = Session::get('DeleteSuccess'))
                 <div class="bg-green-200 overflow-hidden shadow-sm sm:rounded-lg mb-8 py-4 px-6 text-green-800 flex justify-between" id="flash">
                     <span>
                         <i class="fa-solid fa-circle-check inline-block"></i>
                         <p class="font-bold inline-block pl-2">Awesome!</p>
+                        <p class="inline-block pl-2">{{ $message }}</p>
+                    </span>
+                    <a href="#"><i class="fa-solid fa-xmark text-2xl" id="flash-close"></i></a>
+                </div>   
+            @endif
+            @if ($message = Session::get('DeleteFailed'))
+                <div class="bg-red-200 overflow-hidden shadow-sm sm:rounded-lg mb-8 py-4 px-6 text-red-800 flex justify-between" id="flash">
+                    <span>
+                        <i class="fa-solid fa-circle-check inline-block"></i>
+                        <p class="font-bold inline-block pl-2">Ouch, sorry!</p>
                         <p class="inline-block pl-2">{{ $message }}</p>
                     </span>
                     <a href="#"><i class="fa-solid fa-xmark text-2xl" id="flash-close"></i></a>
@@ -93,12 +103,12 @@
 
                     {{-- TABLE --}}
                     <div class="container overflow-auto rounded-xl relative shadow-sm rounded-t-lg">
-                        <table class="table-auto w-full border border-collapse mt-4 px-3">
+                        <table class="table-fixed w-full border border-collapse mt-4 px-3">
                             <thead>
                                 <tr class="bg-gradient-to-r from-slate-200 to-slate-200/80">
                                     <th class="p-2">No.</th>
                                     <th class="p-2">Product Code</th>
-                                    <th class="p-2">Product Name</th>
+                                    <th class="p-2 w-80">Product Name</th>
                                     <th class="p-2">Dimension</th>
                                     <th class="p-2">Unit</th>
                                     <th class="p-2">Action</th>
@@ -114,7 +124,7 @@
                                 <tr class="border-t border-b text-center">
                                     <td class="p-2">{{ $loop->iteration }}</td>
                                     <td class="p-2">{{ $product->code }}</td>
-                                    <td class="p-2">{{ $product->name }}</td>
+                                    <td class="p-2 w-80">{{ $product->name }}</td>
                                     <td class="p-2">{{ $product->dimension }}</td>
                                     <td class="p-2">{{ $product->unit }}</td>
                                     <td class="p-2">

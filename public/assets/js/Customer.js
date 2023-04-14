@@ -42,7 +42,6 @@ function search() {
         },
         function (data) {
             tableRows(data);
-            console.log(data);
         }
     );
 }
@@ -59,13 +58,13 @@ function tableRows(response) {
         htmlView +=
             `
             <tr class="border-t border-b text-center">
-                <td class="p-2">` + (i+1) + `</td>
-                <td class="p-2">` + response.customer[i].code + `</td>
+                <td class="p-2 w-20">` + (i+1) + `</td>
+                <td class="p-2 w-36">` + response.customer[i].code + `</td>
                 <td class="p-2">` + response.customer[i].name + `</td>
                 <td class="p-2">` + response.customer[i].npwp + `</td>
                 <td class="p-2">` + (response.customer[i].contact ? response.customer[i].contact : '') + `</td>
                 <td class="p-2">` + response.customer[i].address.slice(0, 18) + (response.customer[i].address.length > 18 ? "..." : "") + `</td>
-                <td class="p-2">
+                <td class="p-2 w-3">
                     <a class="edit-button" href="/customer/` + response.customer[i].code + `/edit"><i class="fa-regular fa-pen-to-square text-gray-400 hover:text-gray-600 text-lg px-3"></i></a>
                     <button value="` + response.customer[i].code + `" class="delete-button"><i class="fa-solid fa-trash hover:text-[#144272] text-[#2C74B3] text-lg px-3"></i></button>
                 </td>

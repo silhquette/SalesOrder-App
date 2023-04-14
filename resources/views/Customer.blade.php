@@ -37,16 +37,16 @@
 
                     {{-- table --}}
                     <div class="container overflow-auto rounded-xl relative shadow-sm rounded-t-lg">
-                        <table class="table-auto w-full border border-collapse mt-4 px-3">
+                        <table class="table-fixed w-full border border-collapse mt-4 px-3">
                             <thead>
                                 <tr class="bg-gradient-to-r from-slate-200 to-slate-200/80">
-                                    <th class="p-2">No.</th>
-                                    <th class="p-2">Customer Code</th>
+                                    <th class="p-2 w-20">No.</th>
+                                    <th class="p-2 w-36">Customer Code</th>
                                     <th class="p-2">Customer Name</th>
                                     <th class="p-2">NPWP</th>
                                     <th class="p-2">Contact</th>
                                     <th class="p-2">Address</th>
-                                    <th class="p-2">Action</th>
+                                    <th class="p-2 w-36">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -57,13 +57,13 @@
                                 @endif
                                 @foreach ($customers as $customer)
                                 <tr class="border-t border-b text-center">
-                                    <td class="p-2">{{ $loop->iteration }}</td>
-                                    <td class="p-2">{{ $customer->code }}</td>
+                                    <td class="p-2 w-20">{{ $loop->iteration }}</td>
+                                    <td class="p-2 w-36">{{ $customer->code }}</td>
                                     <td class="p-2">{{ $customer->name }}</td>
                                     <td class="p-2">{{ $customer->npwp }}</td>
                                     <td class="p-2">{{ $customer->contact }}</td>
                                     <td class="p-2">{{ Str::limit($customer->address, 18) }}</td>
-                                    <td class="p-2">
+                                    <td class="p-2 w-36">
                                         <a class="edit-button" href="{{ route('customer.edit', $customer->code) }}"><i class="fa-regular fa-pen-to-square text-gray-400 hover:text-gray-600 text-lg px-3"></i></a>
                                         <button value="{{ $customer->code }}" class="delete-button"><i class="fa-solid fa-trash hover:text-[#144272] text-[#2C74B3] text-lg px-3"></i></button>
                                     </td>
