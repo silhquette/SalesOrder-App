@@ -22,7 +22,6 @@ return new class extends Migration
             $table->string('nomor_po')->unique();
             $table->date('due_time');
             $table->date('tanggal_po');
-            $table->integer('total');
             $table->smallInteger('ppn');
             $table->string('order_code')->unique();
             $table->timestamps();

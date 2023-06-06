@@ -55,7 +55,7 @@
                                     <td class="p-2">{{ $purchaseOrder->nomor_po }}</td>
                                     <td class="p-2">{{ date_format(date_create($purchaseOrder->tanggal_po),"d M Y") }}</td>
                                     <td class="p-2">{{ $purchaseOrder->customer->name }}</td>
-                                    <td class="p-2">Rp. {{ number_format($purchaseOrder->total, 2, ',', '.') }}</td>
+                                    <td class="p-2">Rp. {{ number_format($purchaseOrder['total'], 2, ',', '.') }}</td>
                                     <td class="p-2">{{ date_format(date_create($purchaseOrder->due_time),"d M Y") }}</td>
                                     <td class="p-2">
                                         <button title="details" value="{{ $purchaseOrder->order_code }}" class="show-button"><i class="fa-solid fa-eye hover:text-[#144272] text-[#2C74B3] text-lg px-3"></i></button>

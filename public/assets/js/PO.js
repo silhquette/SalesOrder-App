@@ -54,7 +54,7 @@ function load_js() {
 
             $("#sub-total").html(toRupiah(sub_total, {spaceBeforeUnit: true}));
             $("#ppn").html(data.ppn + '%'); 
-            $("#amount").html(toRupiah(data.total, {spaceBeforeUnit: true}));
+            $("#amount").html(toRupiah(sub_total + sub_total * 0.01 * parseInt(data.ppn), {spaceBeforeUnit: true}));
         });
 
     });

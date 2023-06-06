@@ -83,11 +83,11 @@
             </tr>
             <tr>
                 <td>VAT {{ $purchase_order["ppn"] }}%</td>
-                <td>Rp. {{ number_format((0.11*$subtotal), 2, ',', '.') }}</td>
+                <td>Rp. {{ number_format((0.01*$purchase_order["ppn"]*$subtotal), 2, ',', '.') }}</td>
             </tr>
             <tr>
                 <td>Total</td>
-                <td>Rp. {{ number_format($purchase_order["total"], 2, ',', '.') }}</td>
+                <td>Rp. {{ number_format((0.01*$purchase_order["ppn"]*$subtotal+$subtotal), 2, ',', '.') }}</td>
             </tr>
         </tbody>
     </table>

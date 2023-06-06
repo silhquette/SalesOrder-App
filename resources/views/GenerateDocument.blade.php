@@ -59,7 +59,7 @@
                                     </tr>
                                     <tr class="text-center bg-slate-100">
                                         <td class="font-semibold" colspan="4">Amount</td>
-                                        <td id="amount">Rp. {{ number_format($purchaseOrder->total, 2, ',', '.') }}</td>
+                                        <td id="amount">Rp. {{ number_format($purchaseOrder->ppn * 0.01 * $subtotal + $subtotal, 2, ',', '.') }}</td>
                                         <td></td>
                                     </tr>
                                 </tbody>

@@ -23,8 +23,18 @@ class PurchaseOrderController extends Controller
      */
     public function index()
     {
+        // Set total amount
+        $PurchaseOrders = PurchaseOrder::latest()->get();
+        if (count($PurchaseOrders) != 0) {
+            foreach ($PurchaseOrders as $PurchaseOrder) {
+                foreach ($PurchaseOrder->orders as $order) {
+                    $PurchaseOrder['total'] += $order->amount;
+                }
+            }
+        }
+        
         return view('PO', [
-            'PO' => PurchaseOrder::latest()->get()
+            'PO' => $PurchaseOrders,
         ]);
     }
 
@@ -35,7 +45,10 @@ class PurchaseOrderController extends Controller
      */
     public function create()
     {
+        // Get recent date
         $year_month = Carbon::now()->format('Y') . '_' . Carbon::now()->format('m');
+        
+        // Generate nomor order (ID)
         $nomor_urut = PurchaseOrder::select('order_code')->where('created_at', 'like', $year_month . '%')->latest()->limit(1)->get();
         if (count($nomor_urut) == 0) {
             $nomor_urut = '001';
@@ -81,7 +94,6 @@ class PurchaseOrderController extends Controller
         $validatedPO = $request->validate([
             'customer_id' => 'exists:customers,id',
             'nomor_po' => 'unique:purchase_orders,nomor_po',
-            'total' => '',
             'ppn' => '',
             'order_code' => 'unique:purchase_orders,order_code',
             'due_time' => 'date',
@@ -183,8 +195,16 @@ class PurchaseOrderController extends Controller
         $validatedDate = $request->validate([
             'print_date' => 'date'
         ]);
+
+        // Update term of payemnt
+        $order->due_time = Carbon::parse($request['print_date'])
+            ->addDays($order->customer->term)
+            ->format('Y-m-d');
+        $order->update([
+            'due_time' => $order->due_time
+        ]);
             
-        // generate document number
+        // Generate document number
         $prev_doc = Document::select(['month','document_number'])->latest()->get();
         if (count($prev_doc)) {
             $doc_number = (int)$prev_doc[0]['document_number'] + 1;
@@ -192,7 +212,7 @@ class PurchaseOrderController extends Controller
             $doc_number = 1;
         }
 
-        // generate month and year
+        // Generate month and year
         $doc_month = Carbon::parse($request['print_date'])->month;
         $doc_year = Carbon::parse($request['print_date'])->year;
         // Table insert for Document

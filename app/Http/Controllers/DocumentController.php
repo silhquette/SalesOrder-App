@@ -51,7 +51,7 @@ class DocumentController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(PurchaseOrder $order) {
-        return view('Document', [
+        return view('GenerateDocument', [
             'purchaseOrder' => $order,
             'subtotal' => 0
         ]);
