@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -22,36 +24,18 @@ class ProductController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        // 
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\request  $request
+     * @param  \Illuminate\Http\StoreProductRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        $request['code'] = strtoupper($request['code']);
-        $request['name'] = strtoupper($request['name']);
-        $request['dimension'] = strtoupper($request['dimension']);
-        $request['unit'] = strtoupper($request['unit']);
-
-        $validated = $request->validate([
-            'code' => 'unique:products,code|string|min:4',
-            'name' => 'unique:products,name|string|min:4',
-            'dimension' => '',
-            'unit' => ''
-        ]);
-
-        $product = Product::create($validated);
+        $product = Product::create(
+            array_map(
+                "strtoupper", 
+                $request->all()
+        ));
 
         if ($product) {
             return redirect()->route('product.index')->with('productSuccess', 'Data produk berhasil ditambahkan kedalam daftar');
@@ -85,27 +69,16 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  Illuminate\Http\Request  $request
+     * @param  Illuminate\Http\UpdateProductRequest  $request
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
-    {
-        $request['code'] = strtoupper($request['code']);
-        $request['name'] = strtoupper($request['name']);
-        $request['dimension'] = strtoupper($request['dimension']);
-        $request['unit'] = strtoupper($request['unit']);
-        
-        $validated = $request->validate([
-            'edit-code' => 'string|min:4',
-            'edit-name' => 'string|min:4',
-            'edit-dimension' => ''
-        ]);
-
-        $product->name = $validated['edit-name'];
-        $product->code = $validated['edit-code'];
-        $product->dimension = $validated['edit-dimension'];
-        $product->save();
+    public function update(UpdateProductRequest $request, Product $product)
+    {   $product->update(
+            array_map(
+                "strtoupper", 
+                $request->all()
+        ));
 
         return redirect()->route('product.index')->with('editSuccess', 'Data produk berhasil diubah');
     }

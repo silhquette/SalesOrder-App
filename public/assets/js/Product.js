@@ -107,9 +107,10 @@ function editProduct() {
         var id = $(this).val();
     
         $.get(`/product/`+id, function(data, status) {
-            $("#edit-wrap input[name='edit-code']").val(data.code);
-            $("#edit-wrap input[name='edit-name']").val(data.name);
-            $("#edit-wrap input[name='edit-dimension']").val(data.dimension);
+            $("#edit-wrap input[name='code']").val(data.code);
+            $("#edit-wrap input[name='name']").val(data.name);
+            $("#edit-wrap input[name='dimension']").val(data.dimension);
+            $("#edit-wrap input[name='unit']").val(data.unit);
         });
     
         $("#edit-wrap").show();

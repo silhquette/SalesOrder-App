@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PurchaseOrder;
-use App\Http\Requests\StorePurchaseOrderRequest;
-use App\Http\Requests\UpdatePurchaseOrderRequest;
+use App\Models\SalesOrder;
+use App\Http\Requests\StoreSalesOrderRequest;
+use App\Http\Requests\UpdateSalesOrderRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
@@ -14,7 +14,7 @@ use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Support\Facades\Validator;
 
-class PurchaseOrderController extends Controller
+class SalesOrderController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -24,17 +24,17 @@ class PurchaseOrderController extends Controller
     public function index()
     {
         // Set total amount
-        $PurchaseOrders = PurchaseOrder::latest()->get();
-        if (count($PurchaseOrders) != 0) {
-            foreach ($PurchaseOrders as $PurchaseOrder) {
-                foreach ($PurchaseOrder->orders as $order) {
-                    $PurchaseOrder['total'] += $order->amount;
+        $SalesOrders = SalesOrder::latest()->get();
+        if (count($SalesOrders) != 0) {
+            foreach ($SalesOrders as $SalesOrder) {
+                foreach ($SalesOrder->orders as $order) {
+                    $SalesOrder['total'] += $order->amount;
                 }
             }
         }
         
         return view('PO', [
-            'PO' => $PurchaseOrders,
+            'PO' => $SalesOrders,
         ]);
     }
 
@@ -49,7 +49,7 @@ class PurchaseOrderController extends Controller
         $year_month = Carbon::now()->format('Y') . '_' . Carbon::now()->format('m');
         
         // Generate nomor order (ID)
-        $nomor_urut = PurchaseOrder::select('order_code')->where('created_at', 'like', $year_month . '%')->latest()->limit(1)->get();
+        $nomor_urut = SalesOrder::select('order_code')->where('created_at', 'like', $year_month . '%')->latest()->limit(1)->get();
         if (count($nomor_urut) == 0) {
             $nomor_urut = '001';
         } else {
@@ -72,10 +72,10 @@ class PurchaseOrderController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StorePurchaseOrderRequest  $request
+     * @param  \App\Http\Requests\StoreSalesOrderRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StorePurchaseOrderRequest $request)
+    public function store(StoreSalesOrderRequest $request)
     {
         // Get customer_id
         $request['customer_id'] = explode(' - ', $request->customer_id)[1];
@@ -89,34 +89,34 @@ class PurchaseOrderController extends Controller
             ->addDays($term)
             ->format('Y-m-d');
 
-        // Table insert for purchase order
+        // Table insert for Sales order
         $request['nomor_po'] = strtoupper($request['nomor_po']);
         $validatedPO = $request->validate([
             'customer_id' => 'exists:customers,id',
-            'nomor_po' => 'unique:purchase_orders,nomor_po',
+            'nomor_po' => 'unique:Sales_orders,nomor_po',
             'ppn' => '',
-            'order_code' => 'unique:purchase_orders,order_code',
+            'order_code' => 'unique:Sales_orders,order_code',
             'due_time' => 'date',
             'tanggal_po' => 'date',
         ]);
 
-        PurchaseOrder::create($validatedPO);
+        SalesOrder::create($validatedPO);
 
         // Table insert for order
-        $PurchaseID = PurchaseOrder::latest()->get()[0]['id'];
+        $SalesID = SalesOrder::latest()->get()[0]['id'];
         foreach ($request['order'] as $key => $order) {
             $order['product_id'] = Product::select(['id'])
                 ->where('name', '=', $order['product_id'])
                 ->get()[0]
                 ->id;
 
-            $order['purchase_order_id'] = $PurchaseID;
+            $order['Sales_order_id'] = $SalesID;
 
             // Array validation
             Validator::make(
                 $order,
                 [
-                    'purchase_order_id' => 'exists:purchase_orders,id',
+                    'Sales_order_id' => 'exists:Sales_orders,id',
                     'product_id' => 'exists:products,id'
                 ]
             );
@@ -137,7 +137,7 @@ class PurchaseOrderController extends Controller
         $doc_year = Carbon::parse($request['print_date'])->year;
         
         // Table insert for Document
-        $newest_order = PurchaseOrder::latest()->limit(1)->get()[0]['orders'];
+        $newest_order = SalesOrder::latest()->limit(1)->get()[0]['orders'];
         foreach ($newest_order as $selected_order) {
             $data = [
                 'order_id' => $selected_order["id"],
@@ -156,21 +156,21 @@ class PurchaseOrderController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\PurchaseOrder  $purchaseOrder
+     * @param  \App\Models\SalesOrder  $SalesOrder
      * @return \Illuminate\Http\Response
      */
-    public function show(PurchaseOrder $order)
+    public function show(SalesOrder $order)
     {
-        return $order;
+        return $order->with('orders')->get();
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\PurchaseOrder  $purchaseOrder
+     * @param  \App\Models\SalesOrder  $SalesOrder
      * @return \Illuminate\Http\Response
      */
-    public function edit(PurchaseOrder $order)
+    public function edit(SalesOrder $order)
     {
         //
     }
@@ -178,11 +178,11 @@ class PurchaseOrderController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdatePurchaseOrderRequest  $request
-     * @param  \App\Models\PurchaseOrder  $purchaseOrder
+     * @param  \App\Http\Requests\UpdateSalesOrderRequest  $request
+     * @param  \App\Models\SalesOrder  $SalesOrder
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdatePurchaseOrderRequest $request, PurchaseOrder $order)
+    public function update(UpdateSalesOrderRequest $request, SalesOrder $order)
     {
         // Update field keterangan
         for ($i=0; $i < count($request->keterangan); $i++) { 
@@ -234,10 +234,10 @@ class PurchaseOrderController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\PurchaseOrder  $purchaseOrder
+     * @param  \App\Models\SalesOrder  $SalesOrder
      * @return \Illuminate\Http\Response
      */
-    public function destroy(PurchaseOrder $order)
+    public function destroy(SalesOrder $order)
     {
         $order->delete();
         return redirect()->route('order.index')->with('deleteSuccess', 'Data Sales Order berhasil dihapus');
@@ -251,9 +251,9 @@ class PurchaseOrderController extends Controller
      */
     public function search(Request $request)
     {
-        $purchaseOrder = PurchaseOrder::all();
+        $SalesOrder = SalesOrder::all();
         if ($request->keyword != '') {
-            $purchaseOrder = PurchaseOrder::where('order_number', 'LIKE', '%' . $request->keyword . '%')
+            $SalesOrder = SalesOrder::where('order_number', 'LIKE', '%' . $request->keyword . '%')
                 ->orwhere('order_number', 'LIKE', '%' . $request->keyword . '%')
                 ->orWhereHas('customer', function($query){
                     global $request;
@@ -266,7 +266,7 @@ class PurchaseOrderController extends Controller
                 ->get();
         }
         return response()->json([
-            'purchaseOrder' => $purchaseOrder
+            'SalesOrder' => $SalesOrder
         ]);
     }
 }

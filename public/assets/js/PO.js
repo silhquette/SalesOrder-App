@@ -16,6 +16,7 @@ function load_js() {
         e.preventDefault();
         const BUTTON_VALUE = $(this).val();
         $.get("order/" + BUTTON_VALUE, function (data, textStatus, jqXHR) {
+            data = data.shift();
             const CREATED = DateFormat(data.created_at);
             const DUE = DateFormat(data.due_time);
 

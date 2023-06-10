@@ -158,21 +158,21 @@
                         <!-- Product Code -->
                         <div class="w-full">
                             <x-input-label for="code" :value="__('Product Code')" />
-                            <x-text-input id="code" class="block mt-1 w-full" type="text" name="edit-code" :value="old('edit-code')" required autofocus />
+                            <x-text-input id="code" class="block mt-1 w-full" type="text" name="code" :value="old('code')" required autofocus />
                             <x-input-error :messages="$errors->get('code')" class="mt-2" />
                         </div>
                 
                         <!-- Product Name -->
                         <div class="w-full col-span-2">
                             <x-input-label for="name" :value="__('Product name')" />
-                            <x-text-input id="name" class="block mt-1 w-full" type="text" name="edit-name" :value="old('edit-name')" required autofocus />
+                            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus />
                             <x-input-error :messages="$errors->get('name')" class="mt-2" />
                         </div>
                         
                         <!-- Product Dimension -->
                         <div class="w-full">
                             <x-input-label for="dimension" :value="__('Product Dimension (mm)')" />
-                            <x-text-input id="dimension" class="block mt-1 w-full" type="text" name="edit-dimension" :value="old('edit-dimension')" required autofocus />
+                            <x-text-input id="dimension" class="block mt-1 w-full" type="text" name="dimension" :value="old('dimension')" required autofocus />
                             <x-input-error :messages="$errors->get('dimension')" class="mt-2" />
                         </div>
                             

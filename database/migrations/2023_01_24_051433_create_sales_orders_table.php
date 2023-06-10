@@ -13,9 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('purchase_orders', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('customer_id')
+        Schema::create('sales_orders', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->foreignUuid('customer_id')
+                ->references('id')->on('customers')
                 ->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
@@ -35,6 +36,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('purchase_orders');
+        Schema::dropIfExists('sales_orders');
     }
 };

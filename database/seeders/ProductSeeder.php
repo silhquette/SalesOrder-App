@@ -15,11 +15,6 @@ class ProductSeeder extends Seeder
      */
     public function run()
     {
-        Product::factory()->create([
-            'code' => 'AAAA',
-            'name' => 'Produk contoh',
-            'dimension' => '12 x 3 x 43 mm',
-            'unit' => 'pcs'
-        ]);
+        Product::factory(10)->create();
     }
 }

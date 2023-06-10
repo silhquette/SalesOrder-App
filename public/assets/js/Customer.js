@@ -14,7 +14,7 @@ function deleteCustomer() {
 
         $.get('/customer/' + id, function(data) {
             $('#customer-name-delete').html(data.name);
-            console.log(data);
+            // console.log(data);
         })
         
         $("#delete-form").attr("action", "/customer/"+id);

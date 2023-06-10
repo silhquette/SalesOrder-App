@@ -10,7 +10,9 @@ class Document extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+    protected $primaryKey = 'id';
     protected $with = ['order'];
+    public $incrementing = false;
     
     public function order()
     {

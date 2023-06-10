@@ -14,19 +14,21 @@ return new class extends Migration
     public function up()
     {
         Schema::create('orders', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('purchase_order_id')
+            $table->uuid('id')->primary();
+            $table->foreignUuid('sales_order_id')
+                ->references('id')->on('sales_orders')
                 ->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->foreignId('product_id')
+            $table->foreignUuid('product_id')
+                ->references('id')->on('products')
                 ->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->integer('qty');
             $table->smallInteger('discount');
-            $table->integer('amount');
             $table->integer('price');
+            $table->integer('amount');
             $table->string('keterangan')->nullable();
             $table->timestamps();
         });

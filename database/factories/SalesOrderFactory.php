@@ -3,11 +3,13 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\Customer;
+use Carbon\Carbon;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Product>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PurchaseOrder>
  */
-class ProductFactory extends Factory
+class SalesOrderFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -16,12 +18,16 @@ class ProductFactory extends Factory
      */
     public function definition()
     {
+        $customer = Customer::all()->random();
+
         return [
             'id' => $this->faker->uuid(),
-            'code' => strtoupper($this->getCode(5)),
-            'name' => strtoupper($this->faker->unique()->sentence(2)),
-            'dimension' => '12 X 24 MM',
-            'unit' => 'PCS'
+            'customer_id' => $customer->id,
+            'nomor_po' => strtoupper($this->getCode(8)),
+            'due_time' => Carbon::now()->addDays($customer->term),
+            'tanggal_po' => Carbon::now(),
+            'ppn' => rand(0, 11),
+            'order_code' => '2306001'
         ];
     }
 

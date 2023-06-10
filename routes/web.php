@@ -4,8 +4,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\PurchaseOrderController;
-use App\Models\PurchaseOrder;
+use App\Http\Controllers\SalesOrderController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,13 +26,10 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::resource('product', ProductController::class)->middleware(['auth', 'verified']);
-Route::resource('customer', CustomerController::class)->middleware(['auth', 'verified']);
-Route::resource('order', PurchaseOrderController::class)->middleware(['auth', 'verified']);
 
 Route::post('/product/search', [ProductController::class, 'search'])->name('product.search');
 Route::post('/customer/search', [CustomerController::class, 'search'])->name('customer.search');
-Route::post('/order/search', [PurchaseOrderController::class, 'search'])->name('order.search');
+Route::post('/order/search', [SalesOrderController::class, 'search'])->name('order.search');
 Route::group(['prefix'=>'/doc'], function (){
     Route::get('/print-surat-jalan/{order}', [DocumentController::class, 'printSuratJalan'])->name('printSuratjalan');
     Route::get('/print-invoice/{order}', [DocumentController::class, 'printInvoice'])->name('printInvoice');
@@ -41,6 +37,9 @@ Route::group(['prefix'=>'/doc'], function (){
 });
 
 Route::middleware('auth')->group(function () {
+    Route::resource('customer', CustomerController::class);
+    Route::resource('product', ProductController::class);
+    Route::resource('order', SalesOrderController::class);
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

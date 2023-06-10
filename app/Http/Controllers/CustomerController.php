@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCustomerRequest;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -38,30 +39,16 @@ class CustomerController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests  $request
+     * @param  \App\Http\StoreCustomerRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreCustomerRequest $request)
     {
-        $request['name'] = strtoupper($request['name']);
-        $request['npwp'] = strtoupper($request['npwp']);
-        $request['address'] = strtoupper($request['address']);
-        $request['contact'] = strtoupper($request['contact']);
-        $request['npwp_add'] = strtoupper($request['npwp_add']);
-        $request['code'] = strtoupper($request['code']);
-
-        $validated = $request->validate([
-            'npwp' => 'size:20',
-            'name' => 'string|min:4',
-            'email' => 'email',
-            'term' => 'numeric',
-            'address' => 'string|min:10|unique:customers,address',
-            'contact' => '',
-            'npwp_add' => '',
-            'code'=> 'unique:customers,code'
-        ]);
-
-        $customer = Customer::create($validated);
+        $customer = Customer::create(
+            array_map(
+                "strtoupper", 
+                $request->all()
+        ));
 
         if ($customer) {
             return redirect()->route('customer.create')->with('customerSuccess', 'Data pelanggan berhasil ditambahkan kedalam daftar');
