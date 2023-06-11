@@ -32,7 +32,6 @@ function search() {
         },
         function (data) {
             tableRows(data);
-            // console.log(data);
         }
     );
 }

@@ -6,7 +6,6 @@ use App\Models\SalesOrder;
 use App\Http\Requests\StoreSalesOrderRequest;
 use App\Http\Requests\UpdateSalesOrderRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 use App\Models\Customer;
 use App\Models\Document;
@@ -25,9 +24,12 @@ class SalesOrderController extends Controller
     {
         // Set total amount
         $SalesOrders = SalesOrder::latest()->get();
-        if (count($SalesOrders) != 0) {
-            foreach ($SalesOrders as $SalesOrder) {
-                foreach ($SalesOrder->orders as $order) {
+        if (count($SalesOrders) != 0)
+        {
+            foreach ($SalesOrders as $SalesOrder) 
+            {
+                foreach ($SalesOrder->orders as $order) 
+                {
                     $SalesOrder['total'] += $order->amount;
                 }
             }
@@ -45,22 +47,8 @@ class SalesOrderController extends Controller
      */
     public function create()
     {
-        // Get recent date
-        $year_month = Carbon::now()->format('Y') . '_' . Carbon::now()->format('m');
-        
         // Generate nomor order (ID)
-        $nomor_urut = SalesOrder::select('order_code')->where('created_at', 'like', $year_month . '%')->latest()->limit(1)->get();
-        if (count($nomor_urut) == 0) {
-            $nomor_urut = '001';
-        } else {
-            $nomor_urut = (int)substr($nomor_urut[0]->order_code, -2);
-            $nomor_urut += 1;
-            if ($nomor_urut <10) {
-                $nomor_urut = '00' . $nomor_urut;
-            } elseif ($nomor_urut <100) {
-                $nomor_urut = '0' . $nomor_urut;
-            }
-        }
+        $nomor_urut = $this->generateOrderNumber();
 
         return view('CreatePO', [
             'uuid' => Carbon::now()->format('y') . Carbon::now()->format('m') . $nomor_urut,
@@ -80,9 +68,9 @@ class SalesOrderController extends Controller
         // Get customer_id
         $request['customer_id'] = explode(' - ', $request->customer_id)[1];
         $request['customer_id'] = Customer::select(['id'])
-            ->where('address', '=', $request['customer_id'])
-            ->get()[0]
-            ->id;
+            ->where('address', '=', $request['customer_id'])->get()
+            ->first()->id;
+
         // Get term of payment date
         $term = Customer::select(['term'])->where('id', '=', $request['customer_id'])->get()[0]['term'];
         $request['due_time'] = Carbon::now()
@@ -91,19 +79,14 @@ class SalesOrderController extends Controller
 
         // Table insert for Sales order
         $request['nomor_po'] = strtoupper($request['nomor_po']);
-        $validatedPO = $request->validate([
+        $request->validate([
             'customer_id' => 'exists:customers,id',
-            'nomor_po' => 'unique:Sales_orders,nomor_po',
-            'ppn' => '',
-            'order_code' => 'unique:Sales_orders,order_code',
-            'due_time' => 'date',
-            'tanggal_po' => 'date',
         ]);
 
-        SalesOrder::create($validatedPO);
+        SalesOrder::create($request->all());
 
         // Table insert for order
-        $SalesID = SalesOrder::latest()->get()[0]['id'];
+        $SalesID = SalesOrder::latest()->get()->first()->id;
         foreach ($request['order'] as $key => $order) {
             $order['product_id'] = Product::select(['id'])
                 ->where('name', '=', $order['product_id'])
@@ -268,5 +251,31 @@ class SalesOrderController extends Controller
         return response()->json([
             'SalesOrder' => $SalesOrder
         ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function generateOrderNumber()
+    {
+        // Get recent date
+        $year_month = Carbon::now()->format('Y') . '_' . Carbon::now()->format('m');
+        
+        $nomor_urut = SalesOrder::select('order_code')->where('created_at', 'like', $year_month . '%')->latest()->limit(1)->get();
+        if (count($nomor_urut) == 0) {
+            $nomor_urut = '001';
+        } else {
+            $nomor_urut = (int)substr($nomor_urut[0]->order_code, -2);
+            $nomor_urut += 1;
+            if ($nomor_urut <10) {
+                $nomor_urut = '00' . $nomor_urut;
+            } elseif ($nomor_urut <100) {
+                $nomor_urut = '0' . $nomor_urut;
+            }
+        }
+
+        return $nomor_urut;
     }
 }

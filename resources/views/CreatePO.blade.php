@@ -49,7 +49,7 @@
                                     <x-text-input list="customer-list" id="customer_id" class="block mt-1 w-full" type="text" name="customer_id" value="{{ old('customer_id') }}" required autofocus autocomplete=false/>
                                     <datalist id="customer-list" class="">
                                         @foreach ($customers as $customer)
-                                        <option value="{{ $customer->name }} - {{ $customer->address }}">{{ $customer->code }} - {{ $customer->name }} - {{ $customer->address }}</option>   
+                                        <option value="{{ $customer->name }} - {{ $customer->address }}">{{ $customer->code }} - {{ $customer->name }}</option>   
                                         @endforeach
                                     </datalist>
                                     <x-input-error :messages="$errors->get('customer_id')" class="mt-2" />
@@ -65,7 +65,7 @@
                                         <x-text-input list="product-list" id="product_id" class="block mt-1 w-full" type="text" name="order[{{ $i }}][product_id]" value="{{ old('product_id') }}" required autofocus autocomplete=false :disabled=true/>
                                         <datalist id="product-list" class="">
                                             @foreach ($products as $product)
-                                            <option value="{{ $product->name }}">{{ $product->code }} - {{ $product->name }} - {{ $product->dimension }} mm/{{ $product->unit }}</option>   
+                                            <option value="{{ $product->name }}">{{ $product->code }} - {{ $product->name }} - {{ $product->dimension }}/{{ $product->unit }}</option>   
                                             @endforeach
                                         </datalist>
                                         <x-input-error :messages="$errors->get('product_id')" class="mt-2" />

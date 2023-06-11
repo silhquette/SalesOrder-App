@@ -89,26 +89,11 @@ class CustomerController extends Controller
      */
     public function update(Request $request, Customer $customer)
     {
-        $request['name'] = strtoupper($request['name']);
-        $request['npwp'] = strtoupper($request['npwp']);
-        $request['address'] = strtoupper($request['address']);
-        $request['contact'] = strtoupper($request['contact']);
-        $request['npwp_add'] = strtoupper($request['npwp_add']);
-        $request['code'] = strtoupper($request['code']);
-        
-        $validated = $request->validate([
-            'npwp' => 'size:20',
-            'name' => 'string|min:4',
-            'email' => 'email',
-            'term' => 'numeric',
-            'address' => 'string|min:10|unique:customers,address,'.$customer->id,
-            'phone' => '',
-            'contact' => '',
-            'npwp_add' => '',
-            'code'=> 'unique:customers,code,'.$customer->id,
-        ]);
-
-        $customer->update($validated);
+        $customer->update(
+            array_map(
+                "strtoupper", 
+                $request->all()
+        ));
 
         return redirect()->route('customer.index')->with('editSuccess', 'Data pelanggan berhasil diubah');
     }

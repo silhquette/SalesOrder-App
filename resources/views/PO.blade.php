@@ -80,7 +80,7 @@
     {{-- DETAILS --}}
     <div id="detail-wrap" class="hidden">
         <div class="fixed top-0 left-0 right-0 bottom-0 bg-black/70"></div>
-        <div class="fixed top-1/2 left-1/2 bg-white overflow-hidden shadow-sm sm:rounded-lg -translate-x-1/2 -translate-y-1/2 wk-[56rem] 2xl:w-2/3 w-5/6">
+        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg 2xl:w-2/3 w-5/6 relative mx-auto -mt-96 mb-20">
             <div class="p-6">
                 <div class="mb-3">
                     <div class="flex justify-between items-center">

@@ -24,7 +24,12 @@ class UpdateCustomerRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'npwp' => 'size:20',
+            'name' => 'string|min:4',
+            'email' => 'email',
+            'term' => 'numeric',
+            'address' => 'string|min:10|unique:customers,address',
+            'code'=> 'unique:customers,code'
         ];
     }
 }

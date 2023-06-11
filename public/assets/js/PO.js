@@ -91,6 +91,7 @@ $("#keyword").keyup(function (e) {
 
 function search() {
     let keyword = $("#keyword").val();
+    console.log(keyword);
     $.post(
         `/order/search`,
         {
