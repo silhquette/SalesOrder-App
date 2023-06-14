@@ -24,7 +24,7 @@ class UpdateSalesOrderRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'print_date' => 'date'
         ];
     }
 }

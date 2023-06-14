@@ -16,7 +16,6 @@ function load_js() {
         e.preventDefault();
         const BUTTON_VALUE = $(this).val();
         $.get("order/" + BUTTON_VALUE, function (data, textStatus, jqXHR) {
-            data = data.shift();
             const CREATED = DateFormat(data.created_at);
             const DUE = DateFormat(data.due_time);
 
@@ -29,7 +28,7 @@ function load_js() {
             $("#kontak-customer").html(data.customer.contact ? data.customer.contact : "-");
             $("#email-customer").html(data.customer.email ? data.customer.email : "-");
             $("#delete-button").val(data.order_code);
-            $("#print-document").attr("href", "/doc/generate/" + data.order_code);
+            $("#print-document").attr("href", "/document/create/" + data.order_code);
 
             let htmlView = "";
             let sub_total = 0;

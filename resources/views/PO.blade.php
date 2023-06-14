@@ -125,7 +125,7 @@
                                     <td class="font-semibold" colspan="4">Amount</td>
                                     <td id="amount">360000</td>
                                 </tr>
-                            </tbody>   
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -174,7 +174,7 @@
                             {{-- BUTTON CETAK --}}
                             <a href="#" id="print-document" target="blank" class="w-full inline-flex justify-center items-center mx-5 py-2 bg-gradient-to-r from-[#144272] to-[#2C74B3] border border-transparent rounded-md text-xs text-white tracking-widest hover:bg-[#144272] focus:bg-[#144272] active:bg-[#144272] focus:outline-none focus:ring-2 focus:ring-[#144272] focus:ring-offset-2 transition ease-in-out duration-150">
                                 <i class="fa-solid fa-print mr-2"></i>
-                                {{ __('Cetak Doumen') }}
+                                {{ __('Buat Dokumen') }}
                             </a>
                             {{-- DELETE BUTTON --}}
                             <x-secondary-button class="w-full mx-5" id="delete-button">

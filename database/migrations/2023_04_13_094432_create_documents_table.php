@@ -19,8 +19,7 @@ return new class extends Migration
                 ->constrained();
             $table->string("document_number");
             $table->date("print_date");
-            $table->string("month");
-            $table->string("year");
+            $table->string("document_code");
             $table->timestamps();
         });
     }

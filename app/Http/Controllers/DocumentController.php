@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PurchaseOrder;
+use App\Models\SalesOrder;
 use App\Models\Document;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
@@ -10,12 +10,39 @@ use Barryvdh\DomPDF\Facade\Pdf as PDF;
 class DocumentController extends Controller
 {
     /**
-     * Print the specified resource.
+     * Display a listing of the resource.
      *
-     * @param  \App\Models\PurchaseOrder  $PurchaseOrder
      * @return \Illuminate\Http\Response
      */
-    public function printInvoice(PurchaseOrder $order)
+    public function index()
+    {
+        $Documents = Document::latest()->get()->groupBy('document_code');
+        return view('Document.document-list', [
+            'documents' => $Documents,
+        ]);
+    }
+
+     /**
+     * Show the form for creating a new resource.
+     *
+     * @param  \App\Models\SalesOrder  $order
+     * @return \Illuminate\Http\Response
+     */
+    public function create(SalesOrder $order)
+    {
+        return view('Document.document-create', [
+            'sales_order' => $order,
+            'subtotal' => 0
+        ]);
+    }
+
+    /**
+     * Print the specified resource.
+     *
+     * @param  \App\Models\SalesOrder  $order
+     * @return \Illuminate\Http\Response
+     */
+    public function printInvoice(SalesOrder $order)
     {
         // Get latest document number
         $latest_document_number = Document::select(['document_number'])->latest()->limit(1)->get()[0]['document_number'];
@@ -42,28 +69,33 @@ class DocumentController extends Controller
         $pdf = PDF::loadview('Invoice_PDF', $datas)->setPaper('a4', 'potrait');
 	    return $pdf->stream();
     }
-
     
     /**
      * Show the specified resource.
      *
-     * @param  \App\Models\PurchaseOrder  $purchaseOrder
+     * @param  \App\Models\Document  $SalesOrder
      * @return \Illuminate\Http\Response
      */
-    public function show(PurchaseOrder $order) {
-        return view('GenerateDocument', [
-            'purchaseOrder' => $order,
-            'subtotal' => 0
+    public function show(Document $document) {
+        $documents = Document::where('document_number', $document->document_number)->get();
+        $subtotal = 0;
+        foreach ($documents as $document) {
+            $subtotal += $document->order->amount;
+        }
+        return view('Document.document-details', [
+            'documents' => $documents,
+            'subtotal' => $subtotal,
+            'sales_order' => $documents->first()->order->salesOrder
         ]);
     }
 
     /**
      * Print the specified resource.
      *
-     * @param  \App\Models\PurchaseOrder  $PurchaseOrder
+     * @param  \App\Models\SalesOrder  $PurchaseOrder
      * @return \Illuminate\Http\Response
      */
-    public function printSuratJalan(PurchaseOrder $order)
+    public function printSuratJalan(SalesOrder $order)
     {
         // Get latest document number
         $latest_document_number = Document::select(['document_number'])->latest()->limit(1)->get()[0]['document_number'];

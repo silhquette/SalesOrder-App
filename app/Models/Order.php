@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    use HasFactory;
+    use HasFactory, Uuid;
 
     protected $guarded = ['id'];
     protected $primaryKey = 'id';
@@ -16,5 +17,9 @@ class Order extends Model
 
     public function product() {
         return $this->belongsTo(Product::class);
+    }
+
+    public function salesOrder() {
+        return $this->belongsTo(SalesOrder::class);
     }
 }

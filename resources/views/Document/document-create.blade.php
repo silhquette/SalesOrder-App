@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             {{-- MAIN WINDOW --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-8">
-                <form action="{{ route('order.update', $purchaseOrder->order_code) }}" method="post">
+                <form action="{{ route('order.update', $sales_order->order_code) }}" method="post">
                     @csrf
                     @method('PATCH')
                 <div class="p-6 text-gray-900 flex items-center flex-col">
@@ -18,11 +18,11 @@
                     </div>
                     <div class="my-3 w-full overflow-auto">
                         <div class="text-lg text-gray-900 font-semibold">{{ __("Ordered Items") }}</div>
-                        <div class="text-sm text-gray-600" id="item-summary">{{ count($purchaseOrder->orders) . __(" items ordered") }}</div>
+                        <div class="text-sm text-gray-600" id="item-summary">{{ count($sales_order->orders) . __(" items ordered") }}</div>
                         <div class="mt-3 w-[1100px] m-auto" id="row">
                             <table class="w-full table-fixed">
                                 <tbody id="ordered-item">
-                                    @foreach ($purchaseOrder->orders as $order)
+                                    @foreach ($sales_order->orders as $order)
                                         <tr class="text-center">
                                             <td class="w-24"><input type="checkbox" name="order[{{ $loop ->index}}][order_id]" class="rounded-sm cursor-pointer" value="{{ $order->id }}" checked></td>
                                             <td id="product" class="text-left w-80">
@@ -54,12 +54,12 @@
                                     </tr>
                                     <tr class="text-center">
                                         <td class="font-semibold" colspan="4">PPN</td>
-                                        <td id="ppn">{{ $purchaseOrder->ppn }}%</td>
+                                        <td id="ppn">{{ $sales_order->ppn }}%</td>
                                         <td></td>
                                     </tr>
                                     <tr class="text-center bg-slate-100">
                                         <td class="font-semibold" colspan="4">Amount</td>
-                                        <td id="amount">Rp. {{ number_format($purchaseOrder->ppn * 0.01 * $subtotal + $subtotal, 2, ',', '.') }}</td>
+                                        <td id="amount">Rp. {{ number_format($sales_order->ppn * 0.01 * $subtotal + $subtotal, 2, ',', '.') }}</td>
                                         <td></td>
                                     </tr>
                                 </tbody>
@@ -71,7 +71,7 @@
                         <div class="text-sm text-gray-600" id="item-summary">{{ __("Tanggal cetak surat jalan dan invoice") }}</div>
                         
                         <div class="mx-4 mt-4 w-1/2 min-w-min">
-                            <x-text-input id="print_date" class="block mt-1 w-full" type="date" name="print_date" value="{{ old('print_date') ? old('print_date') : (isset($purchaseOrder['print_date']) ? $purchaseOrder['print_date'] : '') }}" required autofocus/>
+                            <x-text-input id="print_date" class="block mt-1 w-full" type="date" name="print_date" value="{{ old('print_date') ? old('print_date') : (isset($sales_order['print_date']) ? $sales_order['print_date'] : '') }}" required autofocus/>
                             <x-input-error :messages="$errors->get('print_date')" class="mt-2" />
                         </div>
                     </div>

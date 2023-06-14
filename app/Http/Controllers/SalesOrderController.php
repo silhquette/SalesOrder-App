@@ -87,19 +87,19 @@ class SalesOrderController extends Controller
 
         // Table insert for order
         $SalesID = SalesOrder::latest()->get()->first()->id;
-        foreach ($request['order'] as $key => $order) {
+        foreach ($request['order'] as $key => $order)
+        {
             $order['product_id'] = Product::select(['id'])
-                ->where('name', '=', $order['product_id'])
-                ->get()[0]
-                ->id;
+                ->where('name', '=', $order['product_id'])->get()
+                ->first()->id;
 
-            $order['Sales_order_id'] = $SalesID;
+            $order['sales_order_id'] = $SalesID;
 
             // Array validation
             Validator::make(
                 $order,
                 [
-                    'Sales_order_id' => 'exists:Sales_orders,id',
+                    'sales_order_id' => 'exists:Sales_orders,id',
                     'product_id' => 'exists:products,id'
                 ]
             );
@@ -144,18 +144,7 @@ class SalesOrderController extends Controller
      */
     public function show(SalesOrder $order)
     {
-        return $order->with('orders')->get();
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\SalesOrder  $SalesOrder
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(SalesOrder $order)
-    {
-        //
+        return SalesOrder::with('orders')->find($order->id);
     }
 
     /**
@@ -174,11 +163,6 @@ class SalesOrderController extends Controller
             ]);
         }
 
-        // Validasi date input
-        $validatedDate = $request->validate([
-            'print_date' => 'date'
-        ]);
-
         // Update term of payemnt
         $order->due_time = Carbon::parse($request['print_date'])
             ->addDays($order->customer->term)
@@ -188,30 +172,29 @@ class SalesOrderController extends Controller
         ]);
             
         // Generate document number
-        $prev_doc = Document::select(['month','document_number'])->latest()->get();
-        if (count($prev_doc)) {
-            $doc_number = (int)$prev_doc[0]['document_number'] + 1;
-        } else {
-            $doc_number = 1;
-        }
+        $current_month = Carbon::now()->year . '-' . Carbon::now()->format('m');
+        $prev_doc = Document::select(['document_number'])
+            ->where('created_at', 'like', $current_month . '%')
+            ->latest()->get();
+        count($prev_doc) ? $doc_number = (int)$prev_doc->first()->document_number + 1 : $doc_number = 1;
 
         // Generate month and year
-        $doc_month = Carbon::parse($request['print_date'])->month;
-        $doc_year = Carbon::parse($request['print_date'])->year;
+        $doc_month = Carbon::parse($request->print_date)->month;
+        $doc_year = Carbon::parse($request->print_date)->year;
+        
         // Table insert for Document
         foreach ($request->order as $selected_order) {
             $data = [
                 'order_id' => $selected_order["order_id"],
                 'document_number' => $doc_number,
-                'month' => $doc_month,
-                'year' => $doc_year,
-                'print_date' => $validatedDate['print_date']
+                'document_code' => $doc_year . $doc_month . $doc_number,
+                'print_date' => $request->print_date
             ];
 
             Document::create($data);
         }
 
-        return redirect()->route('document.generate', $order->order_code);
+        return redirect()->route('order.index');
     }
 
     /**
