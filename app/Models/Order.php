@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Order extends Model
 {
@@ -21,5 +22,10 @@ class Order extends Model
 
     public function salesOrder() {
         return $this->belongsTo(SalesOrder::class);
+    }
+
+    public function documents() : BelongsToMany
+    {
+        return $this->BelongsToMany(Document::class);
     }
 }

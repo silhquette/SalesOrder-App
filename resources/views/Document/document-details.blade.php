@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Cetak Dokumen') }}
+            {{ __('Informasi Dokumen') }}
         </h2>
     </x-slot>
     
@@ -15,19 +15,17 @@
                     </div>
                     <div class="my-3 w-full overflow-auto">
                         <div class="text-lg text-gray-900 font-semibold">{{ __("Ordered Items") }}</div>
-                        <div class="text-sm text-gray-600" id="item-summary">{{ count($documents) . __(" items ordered") }}</div>
+                        <div class="text-sm text-gray-600" id="item-summary">{{ count($order_id) . __(" items ordered") }}</div>
                         <div class="mt-3 w-[1100px] m-auto" id="row">
                             <table class="w-full table-fixed">
                                 <tbody id="ordered-item">
                                     @foreach ($sales_order->orders as $order)
                                         <tr class="text-center">
-                                            @foreach ($documents as $document)
-                                                @if ($order->id == $document->order_id)
-                                                <td class="w-24"><input type="checkbox" name="order[{{ $loop ->index}}][order_id]" class="rounded-sm cursor-pointer" value="{{ $order->id }}" checked disabled></td>
-                                                @else
-                                                <td class="w-24"><input type="checkbox" name="order[{{ $loop ->index}}][order_id]" class="rounded-sm cursor-pointer" value="{{ $order->id }}" disabled></td>
-                                                @endif
-                                            @endforeach
+                                            @if (array_search($order->id, $order_id) > -1)
+                                            <td class="w-24"><input type="checkbox" name="order[{{ $loop ->index}}][order_id]" class="rounded-sm cursor-pointer" value="{{ $order->id }}" checked disabled></td>
+                                            @else
+                                            <td class="w-24"><input type="checkbox" name="order[{{ $loop ->index}}][order_id]" class="rounded-sm cursor-pointer" value="{{ $order->id }}" disabled></td>
+                                            @endif
                                             <td id="product" class="text-left w-80">
                                                 <div class="text-lg font-semibold">{{ $order->product->name }}</div>
                                                 <div class="text-sm">{{ $order->product->dimension }}</div>
@@ -38,7 +36,7 @@
                                             <td id="disc">disc {{ $order->discount }}%<i class="fa-solid fa-tag ml-2"></i></td>
                                             <td id="total">Rp. {{ number_format($order->amount, 2, ',', '.') }}</td>
                                             <td>
-                                                <input type="text" placeholder="keterangan" class="w-full border-none focus:ring-0" name="keterangan[{{ $loop->index }}]" value="{{ $order->keterangan }}">
+                                                <input type="text" placeholder="keterangan" class="w-full border-none focus:ring-0" name="keterangan[{{ $loop->index }}]" value="{{ $order->keterangan }}" readonly>
                                                 <input type="hidden" name="id[{{ $loop->index }}]" value="{{ $order->id }}">
                                             </td>
                                         </tr>
@@ -71,14 +69,19 @@
                         <div class="text-sm text-gray-600" id="item-summary">{{ __("Tanggal cetak surat jalan dan invoice") }}</div>
                         
                         <div class="mx-4 mt-4 w-1/2 min-w-min">
-                            <x-text-input id="print_date" class="block mt-1 w-full" type="date" name="print_date" value="{{ old('print_date') ? old('print_date') : (isset($sales_order['print_date']) ? $sales_order['print_date'] : '') }}" required autofocus/>
+                            <x-text-input id="print_date" class="block mt-1 w-full" type="date" name="print_date" value="{{ $document->print_date }}" disabled/>
                             <x-input-error :messages="$errors->get('print_date')" class="mt-2" />
                         </div>
                     </div>
                 </div>
-                <x-secondary-link href="" class="w-1/3 relative left-1/2 -translate-x-1/2 mb-4" id="generate-button">
-                    {{ __('Edit Document') }}
-                </x-secondary-link>
+                <div class="flex gap-4 justify-center">
+                    <x-primary-link href="{{ route('document.index') }}" class="w-1/6 mb-4" id="generate-button">
+                        {{ __('Back') }}
+                    </x-primary-link>
+                    <x-secondary-link href="{{ route('document.edit', $document->document_code) }}" class="w-1/3 mb-4" id="generate-button">
+                        {{ __('Edit Document') }}
+                    </x-secondary-link>
+                </div>
             </div>
         </div>
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">

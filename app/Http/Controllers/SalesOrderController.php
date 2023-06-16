@@ -8,7 +8,6 @@ use App\Http\Requests\UpdateSalesOrderRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Models\Customer;
-use App\Models\Document;
 use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Support\Facades\Validator;
@@ -106,32 +105,6 @@ class SalesOrderController extends Controller
 
             Order::create($order);
         }
-
-        // Generate document number
-        $prev_doc = Document::select(['month','document_number'])->latest()->get();
-        if (count($prev_doc)) {
-            $doc_number = (int)$prev_doc[0]['document_number'] + 1;
-        } else {
-            $doc_number = 1;
-        }
-        
-        // Generate month and year
-        $doc_month = Carbon::parse($request['print_date'])->month;
-        $doc_year = Carbon::parse($request['print_date'])->year;
-        
-        // Table insert for Document
-        $newest_order = SalesOrder::latest()->limit(1)->get()[0]['orders'];
-        foreach ($newest_order as $selected_order) {
-            $data = [
-                'order_id' => $selected_order["id"],
-                'document_number' => $doc_number,
-                'month' => $doc_month,
-                'year' => $doc_year,
-                'print_date' => Carbon::now()
-            ];
-
-            Document::create($data);
-        }
         
         return redirect()->route('order.create')->with('success', 'Data sales order berhasil ditambahkan kedalam daftar');
     }
@@ -170,31 +143,8 @@ class SalesOrderController extends Controller
         $order->update([
             'due_time' => $order->due_time
         ]);
-            
-        // Generate document number
-        $current_month = Carbon::now()->year . '-' . Carbon::now()->format('m');
-        $prev_doc = Document::select(['document_number'])
-            ->where('created_at', 'like', $current_month . '%')
-            ->latest()->get();
-        count($prev_doc) ? $doc_number = (int)$prev_doc->first()->document_number + 1 : $doc_number = 1;
 
-        // Generate month and year
-        $doc_month = Carbon::parse($request->print_date)->month;
-        $doc_year = Carbon::parse($request->print_date)->year;
-        
-        // Table insert for Document
-        foreach ($request->order as $selected_order) {
-            $data = [
-                'order_id' => $selected_order["order_id"],
-                'document_number' => $doc_number,
-                'document_code' => $doc_year . $doc_month . $doc_number,
-                'print_date' => $request->print_date
-            ];
-
-            Document::create($data);
-        }
-
-        return redirect()->route('order.index');
+        return true;
     }
 
     /**
@@ -237,7 +187,7 @@ class SalesOrderController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Creating new document number.
      *
      * @return \Illuminate\Http\Response
      */

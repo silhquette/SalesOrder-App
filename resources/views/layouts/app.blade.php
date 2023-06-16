@@ -44,13 +44,13 @@
             @if (request()->routeIs('customer*'))
                 <script src="{{ asset('assets/js/Customer.js') }}"></script>
             @endif
-            @if (request()->routeIs('document.generate'))
+            @if (request()->routeIs('document*'))
                 <script src="{{ asset('assets/js/Document.js') }}"></script>
             @endif
             @if (request()->routeIs('order*'))
                 <script src="{{ asset('assets/js/POCreate.js') }}"></script>
                 <script src="{{ asset('assets/js/PO.js') }}"></script>
-                <script src="https://unpkg.com/@develoka/angka-rupiah-js/index.min.js" type="module">
+                <script src="https://unpkg.com/@develoka/angka-rupiah-js/index.min.js" type="module"></script>
             @endif
             <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         </div>

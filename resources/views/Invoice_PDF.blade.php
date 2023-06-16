@@ -64,16 +64,16 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($selected_order as $row)
+            @foreach ($orders as $order)
             <tr>
-                <td style="text-align: center">{{ $row["order"]["qty"] }}</td>
-                <td style="text-align: center">{{ $row["order"]["product"]["unit"] }}</td>
-                <td><span class=" font-semibold">{{ $row["order"]["product"]["name"] }}</span><br>{{ $row["order"]["product"]["dimension"] }}</td>
-                <td>Rp. {{ number_format($row["order"]["price"], 2, ',', '.') }}</td>
-                <td>Rp. {{ number_format($row["order"]["amount"], 2, ',', '.') }}</td>
+                <td style="text-align: center">{{ $order["qty"] }}</td>
+                <td style="text-align: center">{{ $order["product"]["unit"] }}</td>
+                <td><span class=" font-semibold">{{ $order["product"]["name"] }}</span><br>{{ $order["product"]["dimension"] }}</td>
+                <td>Rp. {{ number_format($order["price"], 2, ',', '.') }}</td>
+                <td>Rp. {{ number_format($order["amount"], 2, ',', '.') }}</td>
             </tr>
             @php
-                $subtotal += $row["order"]["amount"]
+                $subtotal += $order["amount"]
             @endphp
             @endforeach
             <tr>

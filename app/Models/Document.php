@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use App\Traits\Uuid;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Document extends Model
 {
@@ -12,15 +13,15 @@ class Document extends Model
 
     protected $guarded = ['id'];
     protected $primaryKey = 'id';
-    protected $with = ['order'];
+    protected $with = ['orders'];
     public $incrementing = false;
     
-    public function order()
+    public function orders() : BelongsToMany
     {
-        return $this->BelongsTo(Order::class);
+        return $this->belongsToMany(Order::class);
     }
 
-    public function getRouteKeyName(): string
+    public function getRouteKeyName() : string
     {
         return 'document_code';
     }

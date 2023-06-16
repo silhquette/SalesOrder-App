@@ -15,8 +15,6 @@ return new class extends Migration
     {
         Schema::create('documents', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('order_id')
-                ->constrained();
             $table->string("document_number");
             $table->date("print_date");
             $table->string("document_code");

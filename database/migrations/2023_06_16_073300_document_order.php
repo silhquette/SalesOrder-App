@@ -13,22 +13,19 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('orders', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignUuid('sales_order_id')
-                ->references('id')->on('sales_orders')
+        Schema::create('document_order', function (Blueprint $table) {
+            $table->id()->autoIncrement();
+            $table->foreignUuid('document_id')
+                ->references('id')->on('documents')
                 ->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->foreignUuid('product_id')
-                ->references('id')->on('products')
+            $table->foreignUuid('order_id')
+                ->references('id')->on('orders')
                 ->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->integer('qty');
-            $table->smallInteger('discount');
-            $table->integer('price');
-            $table->integer('amount');
+            $table->string('additional')->nullable();
             $table->timestamps();
         });
     }
@@ -40,6 +37,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('orders');
+        Schema::dropIfExists('document_order');
     }
 };

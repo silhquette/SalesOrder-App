@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\SalesOrder;
 use App\Models\Document;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use App\Http\Requests\StoreDocumentRequest;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 
 class DocumentController extends Controller
@@ -22,7 +24,7 @@ class DocumentController extends Controller
         ]);
     }
 
-     /**
+    /**
      * Show the form for creating a new resource.
      *
      * @param  \App\Models\SalesOrder  $order
@@ -35,90 +37,171 @@ class DocumentController extends Controller
             'subtotal' => 0
         ]);
     }
-
+    
     /**
-     * Print the specified resource.
+     * Store a newly created resource in storage.
      *
-     * @param  \App\Models\SalesOrder  $order
+     * @param  \App\Http\Requests\StoreDocumentRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function printInvoice(SalesOrder $order)
+    public function store(StoreDocumentRequest $request)
     {
-        // Get latest document number
-        $latest_document_number = Document::select(['document_number'])->latest()->limit(1)->get()[0]['document_number'];
-
-        // Get selected order
-        $selected_order = Document::where('document_number', '=', $latest_document_number)->get();
-
-        // Set document number
-        if ($latest_document_number <10) {
-            $latest_document_number = '00' . $latest_document_number;
-        } elseif ($latest_document_number <100) {
-            $latest_document_number = '0' . $latest_document_number;
-        }
-
-        // Wrapping data
-        $datas = [
-            'selected_order' => $selected_order->toArray(),
-            'print_date' => $selected_order[0]['print_date'],
-            'purchase_order' => $order,
-            'total_product' => 0,
-            'document_number' => $latest_document_number,
-            'subtotal' => 0
+        // Generate document number
+        $current_month = Carbon::now()->format('m');
+        $current_year = Carbon::now()->year;
+        $prev_doc = Document::select(['document_number'])
+            ->where('created_at', 'like', $current_year . '-' . $current_month . '%')
+            ->latest()->get();
+        count($prev_doc) ? $doc_number = (int)$prev_doc->first()->document_number + 1 : $doc_number = 1;
+        
+        // Table insert for Document
+        $data = [
+            'document_number' => $doc_number,
+            'document_code' =>$current_year . $current_month . $doc_number,
+            'print_date' => $request->print_date
         ];
-        $pdf = PDF::loadview('Invoice_PDF', $datas)->setPaper('a4', 'potrait');
-	    return $pdf->stream();
+        Document::create($data);
+
+        Document::latest()->get()->first()->orders()->syncWithoutDetaching($request->order_id);
+
+        return redirect()->route('document.index')->with('Success', 'Data berhasil masuk ke Database!');
     }
     
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\Document  $document
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Document $document)
+    {
+        $subtotal = 0;
+        foreach ($document->orders as $order) {
+            $subtotal += $order->amount;
+        }
+        $order_id = [];
+        foreach ($document->orders as $order) {
+            array_push($order_id, $order->id);
+        }
+        return view('Document.document-edit', [
+            'order_id' => $order_id,
+            'document' => $document,
+            'subtotal' => $subtotal,
+            'sales_order' => $document->orders->first()->salesOrder
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  Illuminate\Http\StoreDocumentRequest  $request
+     * @param  \App\Models\Document  $document
+     * @return \Illuminate\Http\Response
+     */
+    public function update(StoreDocumentRequest $request, Document $document)
+    {
+        $document->update(['print_date' => $request->print_date]);
+        $document->orders()->sync($request->order_id);
+        foreach ($document->orders as $index => $order) {
+           $order->pivot->update(['additional' => $request->keterangan[$index]]);
+        }
+        return redirect()->route('document.show', $document->document_code)->with('Success', 'Data berhasil diubah!');
+    }
+
     /**
      * Show the specified resource.
      *
      * @param  \App\Models\Document  $SalesOrder
      * @return \Illuminate\Http\Response
      */
-    public function show(Document $document) {
-        $documents = Document::where('document_number', $document->document_number)->get();
+    public function show(Document $document)
+    {
         $subtotal = 0;
-        foreach ($documents as $document) {
-            $subtotal += $document->order->amount;
+        foreach ($document->orders as $order) {
+            $subtotal += $order->amount;
+        }
+        $order_id = [];
+        foreach ($document->orders as $order) {
+            array_push($order_id, $order->id);
         }
         return view('Document.document-details', [
-            'documents' => $documents,
+            'order_id' => $order_id,
+            'document' => $document,
             'subtotal' => $subtotal,
-            'sales_order' => $documents->first()->order->salesOrder
+            'sales_order' => $document->orders->first()->salesOrder
         ]);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Document  $Document
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Document $document)
+    {
+        Document::where('document_code', $document->document_code)->delete();
+        return redirect()->route('document.index')->with('deleteSuccess', 'Data Dokumen berhasil dihapus');
     }
 
     /**
      * Print the specified resource.
      *
-     * @param  \App\Models\SalesOrder  $PurchaseOrder
+     * @param  \App\Models\Document  $order
      * @return \Illuminate\Http\Response
      */
-    public function printSuratJalan(SalesOrder $order)
+    public function printInvoice(Document $document)
     {
         // Get latest document number
-        $latest_document_number = Document::select(['document_number'])->latest()->limit(1)->get()[0]['document_number'];
-
-        // Get selected order
-        $selected_order = Document::where('document_number', '=', $latest_document_number)->get();
+        $document_number = $document->document_number;
 
         // Set document number
-        if ($latest_document_number <10) {
-            $latest_document_number = '00' . $latest_document_number;
-        } elseif ($latest_document_number <100) {
-            $latest_document_number = '0' . $latest_document_number;
+        if ($document_number < 10) {
+            $document_number = '00' . $document_number;
+        } elseif ($document_number < 100) {
+            $document_number = '0' . $document_number;
         }
 
         // Wrapping data
         $datas = [
-            'selected_order' => $selected_order->toArray(),
-            'print_date' => $selected_order[0]['print_date'],
-            'purchase_order' => $order,
+            'orders' => $document->orders,
+            'print_date' => $document->print_date,
+            'purchase_order' => $document->orders->first()->salesOrder,
             'total_product' => 0,
-            'document_number' => $latest_document_number
+            'document_number' => $document_number,
+            'subtotal' => 0
+        ];
+        $pdf = PDF::loadview('Invoice_PDF', $datas)->setPaper('a4', 'potrait');
+        return $pdf->stream();
+    }
+
+    /**
+     * Print the specified resource.
+     *
+     * @param  \App\Models\Document  $PurchaseOrder
+     * @return \Illuminate\Http\Response
+     */
+    public function printSuratJalan(Document $document)
+    {
+        // Get latest document number
+        $document_number = $document->document_number;
+
+        // Set document number
+        if ($document_number < 10) {
+            $document_number = '00' . $document_number;
+        } elseif ($document_number < 100) {
+            $document_number = '0' . $document_number;
+        }
+
+        // Wrapping data
+        $datas = [
+            'orders' => $document->orders,
+            'print_date' => $document->print_date,
+            'purchase_order' => $document->orders->first()->salesOrder,
+            'total_product' => 0,
+            'document_number' => $document_number
         ];
         $pdf = PDF::loadview('SuratJalan_PDF', $datas)->setPaper('a4', 'potrait');
-	    return $pdf->stream();
+        return $pdf->stream();
     }
 }

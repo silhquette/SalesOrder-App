@@ -141,16 +141,18 @@
            
             <div class="grid grid-cols-5 gap-6">
                 @foreach ($products as $product)
-                <div class="rounded-xl border text-slate-600 leading-6 bg-white overflow-hidden">
-                    <div class="w-full flex items-center justify-center h-[180px] overflow-hidden">
-                        <img src="{{ asset('assets/images/empty.webp') }}" alt="thumbnail">
+                <div class="rounded-xl border text-slate-600 leading-6 bg-white overflow-hidden flex flex-col justify-between">
+                    <div>
+                        <div class="w-full flex items-center justify-center h-[180px] overflow-hidden">
+                            <img src="{{ asset('assets/images/empty.webp') }}" alt="thumbnail">
+                        </div>
+                        <div class="px-4 py-2 flex flex-col">
+                            <div class=" text-sm">{{ $product->name }} ({{ $product->unit }})</div>
+                            <div class="text-xs lg:text-sm font-semibold pt-2">{{ $product->code }}</div>
+                            <div class=" text-xs text-slate-400">{{ $product->dimension }}</div>
+                        </div>
                     </div>
-                    <div class="px-4 py-2 flex flex-col">
-                        <div class=" text-sm">{{ $product->name }} ({{ $product->unit }})</div>
-                        <div class="text-xs lg:text-sm font-semibold pt-2">{{ $product->code }}</div>
-                        <div class=" text-xs text-slate-400">{{ $product->dimension }}</div>
-                    </div>
-                    <div class="flex justify-evenly">
+                    <div class="flex justify-evenly my-2">
                         <button value="{{ $product->id }}" class="edit-button"><i class="fa-regular fa-pen-to-square text-gray-400 hover:text-gray-600 text-lg px-3"></i></button>
                         <button value="{{ $product->id }}" class="delete-button"><i class="fa-solid fa-trash hover:text-[#144272] text-[#2C74B3] text-lg px-3"></i></button>
                     </div>

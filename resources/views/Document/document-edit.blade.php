@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Cetak Dokumen') }}
+            {{ __('Edit Informasi Dokumen') }}
         </h2>
     </x-slot>
     
@@ -9,21 +9,26 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             {{-- MAIN WINDOW --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-8">
-                <form action="{{ route('document.store') }}" method="post">
+                <form action="{{ route('document.update', $document->document_code) }}" method="post">
                     @csrf
+                    @method('PATCH')
                 <div class="p-6 text-gray-900 flex items-center flex-col">
                     <div class="flex justify-between mb-3">
                         <span class="text-xl">{{ __("Additonal Informations") }}</span>
                     </div>
                     <div class="my-3 w-full overflow-auto">
                         <div class="text-lg text-gray-900 font-semibold">{{ __("Ordered Items") }}</div>
-                        <div class="text-sm text-gray-600" id="item-summary">{{ count($sales_order->orders) . __(" items ordered") }}</div>
+                        <div class="text-sm text-gray-600" id="item-summary">{{ count($order_id) . __(" items ordered") }}</div>
                         <div class="mt-3 w-[1100px] m-auto" id="row">
                             <table class="w-full table-fixed">
                                 <tbody id="ordered-item">
                                     @foreach ($sales_order->orders as $order)
                                         <tr class="text-center">
+                                            @if (array_search($order->id, $order_id) > -1)
                                             <td class="w-24"><input type="checkbox" name="order_id[{{ $loop ->index}}]" class="rounded-sm cursor-pointer" value="{{ $order->id }}" checked></td>
+                                            @else
+                                            <td class="w-24"><input type="checkbox" name="order_id[{{ $loop ->index}}]" class="rounded-sm cursor-pointer" value="{{ $order->id }}"></td>
+                                            @endif
                                             <td id="product" class="text-left w-80">
                                                 <div class="text-lg font-semibold">{{ $order->product->name }}</div>
                                                 <div class="text-sm">{{ $order->product->dimension }}</div>
@@ -38,9 +43,6 @@
                                                 <input type="hidden" name="id[{{ $loop->index }}]" value="{{ $order->id }}">
                                             </td>
                                         </tr>
-                                        @php
-                                            $subtotal += $order->amount
-                                        @endphp
                                     @endforeach
                                 </tbody> 
                             </table>
@@ -70,15 +72,30 @@
                         <div class="text-sm text-gray-600" id="item-summary">{{ __("Tanggal cetak surat jalan dan invoice") }}</div>
                         
                         <div class="mx-4 mt-4 w-1/2 min-w-min">
-                            <x-text-input id="print_date" class="block mt-1 w-full" type="date" name="print_date" value="{{ old('print_date') ? old('print_date') : (isset($sales_order['print_date']) ? $sales_order['print_date'] : '') }}" required autofocus/>
+                            <x-text-input id="print_date" class="block mt-1 w-full" type="date" name="print_date" value="{{ $document->print_date }}"/>
                             <x-input-error :messages="$errors->get('print_date')" class="mt-2" />
                         </div>
                     </div>
                 </div>
                 <x-primary-button class="w-1/3 relative left-1/2 -translate-x-1/2 mb-8" id="generate-button">
-                    {{ __('Generate Document') }}
+                    {{ __('Save Document') }}
                 </x-primary-button>
                 </form>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            {{-- MAIN WINDOW --}}
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-8">
+                <div class="p-6 text-gray-900 flex items-center flex-col">
+                    <div class="flex justify-between mb-6">
+                        <span class="text-xl">{{ __("PDF Preview") }}</span>
+                    </div>
+                    {{-- PREVIEW PDF --}}
+                    <div class="flex w-full gap-4">
+                        <iframe id="surat-jalan-preview" width="50%" src="" height="700px" class=" rounded-md"></iframe>
+                        <iframe id="invoice-preview" width="50%" src="" height="700px" class=" rounded-md"></iframe>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

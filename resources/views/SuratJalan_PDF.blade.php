@@ -72,15 +72,15 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($selected_order as $selected_order)
+            @foreach ($orders as $order)
             <tr>
                 <td class="text-center">{{ $loop->iteration }}</td>
-                <td><span class="font-semibold">{{ $selected_order["order"]["product"]["name"] }}</span><br>{{ $selected_order["order"]["product"]["dimension"] }}</td>
-                <td class="text-center">{{ $selected_order["order"]["qty"] }}</td>
-                <td class="text-center">{{ $selected_order["order"]["product"]["unit"] }}</td>
-                <td>{{ $selected_order["order"]["keterangan"] }}</td>
+                <td><span class="font-semibold">{{ $order["product"]["name"] }}</span><br>{{ $order["product"]["dimension"] }}</td>
+                <td class="text-center">{{ $order["qty"] }}</td>
+                <td class="text-center">{{ $order["product"]["unit"] }}</td>
+                <td>{{ $order["keterangan"] }}</td>
                 @php
-                    $total_product += $selected_order["order"]["qty"]
+                    $total_product += $order["qty"]
                 @endphp
             </tr>
             @endforeach
