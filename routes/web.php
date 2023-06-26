@@ -30,13 +30,13 @@ Route::get('/dashboard', function () {
 Route::post('/product/search', [ProductController::class, 'search'])->name('product.search');
 Route::post('/customer/search', [CustomerController::class, 'search'])->name('customer.search');
 Route::post('/order/search', [SalesOrderController::class, 'search'])->name('order.search');
-Route::group(['prefix'=>'/document'], function (){
-    Route::get('/print-surat-jalan/{document}', [DocumentController::class, 'printSuratJalan'])->name('printSuratjalan');
-    Route::get('/print-invoice/{document}', [DocumentController::class, 'printInvoice'])->name('printInvoice');
-    Route::get('/create/{order}', [DocumentController::class, 'create'])->name('document.create');
-});
 
 Route::middleware('auth')->group(function () {
+    Route::group(['prefix'=>'/document'], function (){
+        Route::get('/print-surat-jalan/{document}', [DocumentController::class, 'printSuratJalan'])->name('printSuratjalan');
+        Route::get('/print-invoice/{document}', [DocumentController::class, 'printInvoice'])->name('printInvoice');
+        Route::get('/create/{order}', [DocumentController::class, 'create'])->name('document.create');
+    });
     Route::resource('document', DocumentController::class);
     Route::resource('customer', CustomerController::class);
     Route::resource('product', ProductController::class);

@@ -18,7 +18,7 @@ class DocumentController extends Controller
      */
     public function index()
     {
-        $Documents = Document::latest()->get()->groupBy('document_code');
+        $Documents = Document::latest()->get();
         return view('Document.document-list', [
             'documents' => $Documents,
         ]);
@@ -83,6 +83,7 @@ class DocumentController extends Controller
         foreach ($document->orders as $order) {
             array_push($order_id, $order->id);
         }
+
         return view('Document.document-edit', [
             'order_id' => $order_id,
             'document' => $document,
@@ -103,8 +104,11 @@ class DocumentController extends Controller
         $document->update(['print_date' => $request->print_date]);
         $document->orders()->sync($request->order_id);
         foreach ($document->orders as $index => $order) {
-           $order->pivot->update(['additional' => $request->keterangan[$index]]);
+            if (isset(array_values($request->keterangan)[$index])) {
+                $order->pivot->update(['additional' => array_values($request->keterangan)[$index]]);
+            }
         }
+        
         return redirect()->route('document.show', $document->document_code)->with('Success', 'Data berhasil diubah!');
     }
 

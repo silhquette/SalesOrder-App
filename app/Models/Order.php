@@ -26,6 +26,6 @@ class Order extends Model
 
     public function documents() : BelongsToMany
     {
-        return $this->BelongsToMany(Document::class);
+        return $this->BelongsToMany(Document::class)->withPivot('additional');
     }
 }

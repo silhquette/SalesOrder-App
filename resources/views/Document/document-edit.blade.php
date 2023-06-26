@@ -25,9 +25,9 @@
                                     @foreach ($sales_order->orders as $order)
                                         <tr class="text-center">
                                             @if (array_search($order->id, $order_id) > -1)
-                                            <td class="w-24"><input type="checkbox" name="order_id[{{ $loop ->index}}]" class="rounded-sm cursor-pointer" value="{{ $order->id }}" checked></td>
+                                            <td class="w-24"><input type="checkbox" name="order_id[{{ $loop ->index}}]" class="check-box rounded-sm cursor-pointer" value="{{ $order->id }}" checked></td>
                                             @else
-                                            <td class="w-24"><input type="checkbox" name="order_id[{{ $loop ->index}}]" class="rounded-sm cursor-pointer" value="{{ $order->id }}"></td>
+                                            <td class="w-24"><input type="checkbox" name="order_id[{{ $loop ->index}}]" class="check-box rounded-sm cursor-pointer" value="{{ $order->id }}"></td>
                                             @endif
                                             <td id="product" class="text-left w-80">
                                                 <div class="text-lg font-semibold">{{ $order->product->name }}</div>
@@ -38,8 +38,12 @@
                                             <td id="quantity">{{ $order->qty }}</td>
                                             <td id="disc">disc {{ $order->discount }}%<i class="fa-solid fa-tag ml-2"></i></td>
                                             <td id="total">Rp. {{ number_format($order->amount, 2, ',', '.') }}</td>
-                                            <td>
-                                                <input type="text" placeholder="keterangan" class="w-full border-none focus:ring-0" name="keterangan[{{ $loop->index }}]" value="{{ $order->keterangan }}">
+                                            <td class="keterangan-wrap">
+                                                @if(count($order->documents->where('document_code', "=", $document->document_code)))
+                                                <input type="text" placeholder="keterangan" class="w-full border-none focus:ring-0 keterangan" name="keterangan[{{ $loop->index }}]" value="{{ $order->documents->where('document_code', "=", $document->document_code)->first()->pivot->additional }}" disabled>
+                                                @else
+                                                <input type="text" placeholder="keterangan" class="w-full border-none focus:ring-0 keterangan" name="keterangan[{{ $loop->index }}]" value="" disabled>
+                                                @endif
                                                 <input type="hidden" name="id[{{ $loop->index }}]" value="{{ $order->id }}">
                                             </td>
                                         </tr>

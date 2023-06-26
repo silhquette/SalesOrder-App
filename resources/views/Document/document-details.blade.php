@@ -36,8 +36,12 @@
                                             <td id="disc">disc {{ $order->discount }}%<i class="fa-solid fa-tag ml-2"></i></td>
                                             <td id="total">Rp. {{ number_format($order->amount, 2, ',', '.') }}</td>
                                             <td>
-                                                <input type="text" placeholder="keterangan" class="w-full border-none focus:ring-0" name="keterangan[{{ $loop->index }}]" value="{{ $order->keterangan }}" readonly>
+                                                @if(count($order->documents->where('document_code', "=", $document->document_code)))
+                                                <input type="text" placeholder="keterangan" class="w-full border-none focus:ring-0" name="keterangan[{{ $loop->index }}]" value="{{ $order->documents->where('document_code', "=", $document->document_code)->first()->pivot->additional }}" readonly>
                                                 <input type="hidden" name="id[{{ $loop->index }}]" value="{{ $order->id }}">
+                                                @else
+                                                <input type="text" placeholder="keterangan" class="w-full border-none focus:ring-0" name="keterangan[{{ $loop->index }}]" value="" readonly>
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach

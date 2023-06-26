@@ -51,15 +51,15 @@
                                 @foreach ($documents as $document)
                                 <tr class="border-t border-b text-center">
                                     <td class="p-2">{{ $loop->iteration }}</td>
-                                    <td class="p-2">{{ $document->first()->document_code }}</td>
-                                    <td class="p-2">{{ $document->first()->orders->first()->salesOrder->order_code }}</td>
-                                    <td class="p-2">{{ $document->first()->orders->first()->salesOrder->customer->name }}</td>
-                                    <td class="p-2">{{ count($document->first()->orders) }}</td>
-                                    <td class="p-2">{{ Str::limit($document->first()->orders->first()->salesOrder->customer->address, 18) }}</td>
-                                    <td class="p-2">{{ $document->first()->print_date }}</td>
+                                    <td class="p-2">{{ $document->document_code }}</td>
+                                    <td class="p-2">{{ $document->orders->first()->salesOrder->order_code }}</td>
+                                    <td class="p-2">{{ $document->orders->first()->salesOrder->customer->name }}</td>
+                                    <td class="p-2">{{ count($document->orders) }}</td>
+                                    <td class="p-2">{{ Str::limit($document->orders->first()->salesOrder->customer->address, 18) }}</td>
+                                    <td class="p-2">{{ $document->print_date }}</td>
                                     <td class="p-2">
-                                        <a class="show-button" href="{{ route('document.show', $document->first()->document_code) }}"><i class="fa-regular fa-eye text-gray-400 hover:text-gray-600 text-lg px-3"></i></a>
-                                        <button value="{{ $document->first()->document_code }}" class="delete-button"><i class="fa-solid fa-trash hover:text-[#144272] text-[#2C74B3] text-lg px-3"></i></button>
+                                        <a class="show-button" href="{{ route('document.show', $document->document_code) }}"><i class="fa-regular fa-eye text-gray-400 hover:text-gray-600 text-lg px-3"></i></a>
+                                        <button value="{{ $document->document_code }}" class="delete-button"><i class="fa-solid fa-trash hover:text-[#144272] text-[#2C74B3] text-lg px-3"></i></button>
                                     </td>
                                 </tr>
                                 @endforeach

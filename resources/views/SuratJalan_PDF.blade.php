@@ -78,7 +78,7 @@
                 <td><span class="font-semibold">{{ $order["product"]["name"] }}</span><br>{{ $order["product"]["dimension"] }}</td>
                 <td class="text-center">{{ $order["qty"] }}</td>
                 <td class="text-center">{{ $order["product"]["unit"] }}</td>
-                <td>{{ $order["keterangan"] }}</td>
+                <td>{{ $order["pivot"]["additional"] }}</td>
                 @php
                     $total_product += $order["qty"]
                 @endphp
