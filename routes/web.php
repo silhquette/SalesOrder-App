@@ -33,8 +33,10 @@ Route::post('/order/search', [SalesOrderController::class, 'search'])->name('ord
 
 Route::middleware('auth')->group(function () {
     Route::group(['prefix'=>'/document'], function (){
-        Route::get('/print-surat-jalan/{document}', [DocumentController::class, 'printSuratJalan'])->name('printSuratjalan');
+        Route::get('/print-surat-jalan/{document}', [DocumentController::class, 'printSuratJalan'])->name('printSuratJalan');
         Route::get('/print-invoice/{document}', [DocumentController::class, 'printInvoice'])->name('printInvoice');
+        Route::get('/download-surat-jalan/{document}', [DocumentController::class, 'downloadSuratJalan'])->name('downloadSuratJalan');
+        Route::get('/download-invoice/{document}', [DocumentController::class, 'downloadInvoice'])->name('downloadInvoice');
         Route::get('/create/{order}', [DocumentController::class, 'create'])->name('document.create');
     });
     Route::resource('document', DocumentController::class);

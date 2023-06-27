@@ -79,10 +79,10 @@
                     </div>
                 </div>
                 <div class="flex gap-4 justify-center">
-                    <x-primary-link href="{{ route('document.index') }}" class="w-1/6 mb-4" id="generate-button">
+                    <x-primary-link href="{{ route('document.index') }}" class="lg:w-1/6 mb-4" id="generate-button">
                         {{ __('Back') }}
                     </x-primary-link>
-                    <x-secondary-link href="{{ route('document.edit', $document->document_code) }}" class="w-1/3 mb-4" id="generate-button">
+                    <x-secondary-link href="{{ route('document.edit', $document->document_code) }}" class="lg:w-1/3 mb-4" id="generate-button">
                         {{ __('Edit Document') }}
                     </x-secondary-link>
                 </div>
@@ -93,12 +93,24 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-8">
                 <div class="p-6 text-gray-900 flex items-center flex-col">
                     <div class="flex justify-between mb-6">
-                        <span class="text-xl">{{ __("PDF Preview") }}</span>
+                        <span class="text-xl lg:inline hidden">{{ __("PDF Preview") }}</span>
+                        <span class="text-xl inline lg:hidden">{{ __("PDF Download") }}</span>
                     </div>
                     {{-- PREVIEW PDF --}}
-                    <div class="flex w-full gap-4">
-                        <iframe id="surat-jalan-preview" width="50%" src="" height="700px" class=" rounded-md"></iframe>
-                        <iframe id="invoice-preview" width="50%" src="" height="700px" class=" rounded-md"></iframe>
+                    <div class="lg:flex hidden w-full gap-4">
+                        <iframe id="surat-jalan-preview" src="" height="700px" class="lg:w-1/2 w-full rounded-md"></iframe>
+                        <iframe id="invoice-preview" src="" height="700px" class="lg:w-1/2 w-full rounded-md"></iframe>
+                    </div>
+                    {{-- DOWNLOAD PDF --}}
+                    <div class="flex mb-14 gap-6">
+                        <a href="{{ route('downloadSuratJalan', $document->document_code) }}" class="flex flex-col items-center justify-center gap-2 border border-gray-300 aspect-square rounded-xl hover:bg-gray-100 p-8">
+                            <img src="{{ asset('assets/images/pdf.webp') }}" class="drop-shadow-sm" alt="pdf-icon">
+                            <p>Surat Jalan</p>
+                        </a>
+                        <a href="{{ route('downloadInvoice', $document->document_code) }}" class="flex flex-col items-center justify-center gap-2 border border-gray-300 aspect-square rounded-xl hover:bg-gray-100 p-8">
+                            <img src="{{ asset('assets/images/pdf.webp') }}" class="drop-shadow-sm" alt="pdf-icon">
+                            <p>Invoice</p>
+                        </a>
                     </div>
                 </div>
             </div>

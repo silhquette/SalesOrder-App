@@ -41,7 +41,7 @@
                     {{-- FORM --}}
                     <form method="POST" action="{{ route('product.store') }}" id="input-form">
                         <div class="flex justify-center mt-4">
-                            <div class="gap-4 w-4/5 grid grid-cols-5">
+                            <div class="gap-4 w-4/5 grid lg:grid-cols-5 grid-cols-1">
                                 @csrf
                         
                                 <!-- Product Code -->
@@ -52,7 +52,7 @@
                                 </div>
                         
                                 <!-- Product Name -->
-                                <div class="w-full col-span-2">
+                                <div class="w-full lg:col-span-2">
                                     <x-input-label for="name" :value="__('Product name')" />
                                     <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus />
                                     <x-input-error :messages="$errors->get('name')" class="mt-2" />
@@ -93,7 +93,7 @@
                         <span class="text-lg">{{ __("Product List") }}</span>
                         
                         {{-- SEARCH --}}
-                        <div class="text-right mr-8 inline-block" id="search">
+                        <div class="text-right mr-8 lg:inline-block hidden" id="search">
                             <form action="">
                                 <input type="text" class="border-x-0 border-t-0 outline-none focus:ring-0 px-3 pb-1 pt-0 pr-9" id="keyword" placeholder="cari barang atau kode">
                                 <i class="fa-solid fa-magnifying-glass ml-[-28px]"></i>
@@ -102,7 +102,7 @@
                     </div>
 
                     {{-- TABLE --}}
-                    <div class="container overflow-auto rounded-xl relative shadow-sm rounded-t-lg">
+                    <div class="container overflow-auto rounded-xl lg:block relative hidden shadow-sm rounded-t-lg">
                         <table class="table-fixed w-full border border-collapse mt-4 px-3">
                             <thead>
                                 <tr class="bg-gradient-to-r from-slate-200 to-slate-200/80">
@@ -136,43 +136,44 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
-            </div>
-           
-            <div class="grid grid-cols-5 gap-6">
-                @foreach ($products as $product)
-                <div class="rounded-xl border text-slate-600 leading-6 bg-white overflow-hidden flex flex-col justify-between">
-                    <div>
-                        <div class="w-full flex items-center justify-center h-[180px] overflow-hidden">
-                            <img src="{{ asset('assets/images/empty.webp') }}" alt="thumbnail">
+
+                    {{-- CARD --}}
+                    <div class="lg:hidden grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
+                        @foreach ($products as $product)
+                        <div class="rounded-xl border text-slate-600 leading-6 bg-white overflow-hidden flex flex-col justify-between">
+                            <div>
+                                <div class="w-full flex items-center justify-center h-[180px] overflow-hidden">
+                                    <img src="{{ asset('assets/images/empty.webp') }}" alt="thumbnail">
+                                </div>
+                                <div class="px-4 py-2 flex flex-col">
+                                    <div class=" text-sm">{{ $product->name }} ({{ $product->unit }})</div>
+                                    <div class="text-xs lg:text-sm font-semibold pt-2">{{ $product->code }}</div>
+                                    <div class=" text-xs text-slate-400">{{ $product->dimension }}</div>
+                                </div>
+                            </div>
+                            <div class="flex justify-evenly my-2">
+                                <button value="{{ $product->id }}" class="edit-button"><i class="fa-regular fa-pen-to-square text-gray-400 hover:text-gray-600 text-lg px-3"></i></button>
+                                <button value="{{ $product->id }}" class="delete-button"><i class="fa-solid fa-trash hover:text-[#144272] text-[#2C74B3] text-lg px-3"></i></button>
+                            </div>
                         </div>
-                        <div class="px-4 py-2 flex flex-col">
-                            <div class=" text-sm">{{ $product->name }} ({{ $product->unit }})</div>
-                            <div class="text-xs lg:text-sm font-semibold pt-2">{{ $product->code }}</div>
-                            <div class=" text-xs text-slate-400">{{ $product->dimension }}</div>
-                        </div>
-                    </div>
-                    <div class="flex justify-evenly my-2">
-                        <button value="{{ $product->id }}" class="edit-button"><i class="fa-regular fa-pen-to-square text-gray-400 hover:text-gray-600 text-lg px-3"></i></button>
-                        <button value="{{ $product->id }}" class="delete-button"><i class="fa-solid fa-trash hover:text-[#144272] text-[#2C74B3] text-lg px-3"></i></button>
+                        @endforeach
                     </div>
                 </div>
-                @endforeach
             </div>
         </div>
     </div>
 
-    {{-- edit form --}}
+    {{-- EDIT --}}
     <div id="edit-wrap" class="hidden">
         <div class="fixed top-0 left-0 right-0 bottom-0 bg-black/70"></div>
-        <div class="fixed top-1/2 left-1/2 bg-white overflow-hidden shadow-sm sm:rounded-lg -translate-x-1/2 -translate-y-1/2 p-6 text-gray-900 w-2/3">
+        <div class="fixed top-1/2 left-1/2 bg-white overflow-hidden shadow-sm sm:rounded-lg -translate-x-1/2 -translate-y-1/2 p-6 text-gray-900 lg:w-2/3 w-full">
             <div class="flex justify-between items-center">
                 <span class="text-lg text-gray-900">{{ __("Product Edit") }}</span>
                 <a href="#"><i class="fa-solid fa-xmark text-2xl mr-2" id="edit-close"></i></a>
             </div>
             <form method="POST" id="edit-form">
                 <div class="flex justify-center mt-4">
-                    <div class="gap-4 w-4/5 grid grid-cols-5">
+                    <div class="gap-4 w-4/5 grid lg:grid-cols-5 grid-cols-1">
                         @csrf
                         @method('PATCH')
                         <!-- Product Code -->
@@ -183,7 +184,7 @@
                         </div>
                 
                         <!-- Product Name -->
-                        <div class="w-full col-span-2">
+                        <div class="w-full lg:col-span-2">
                             <x-input-label for="name" :value="__('Product name')" />
                             <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus />
                             <x-input-error :messages="$errors->get('name')" class="mt-2" />
@@ -215,10 +216,10 @@
         </div>
     </div>
 
-    {{-- confirmation --}}
+    {{-- CONFIRMATION --}}
     <div id="delete-wrap" class="hidden">
         <div class="fixed top-0 left-0 right-0 bottom-0 bg-black/70"></div>
-        <div class="fixed top-1/2 left-1/2 bg-white overflow-hidden shadow-sm sm:rounded-lg -translate-x-1/2 -translate-y-1/2">
+        <div class="fixed top-1/2 lg:left-1/2 left-0 right-0 bg-white overflow-hidden shadow-sm rounded-lg lg:-translate-x-1/2 -translate-y-1/2">
             <div class="p-6">
                 <span class="text-gray-900 font-bold">Warning!</span>
                 <span class="text-gray-700">Apakah anda yakin akan menghapus barang <span id="product-name-delete" class=" font-bold"></span> dari database?</span>

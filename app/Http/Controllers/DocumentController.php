@@ -208,4 +208,65 @@ class DocumentController extends Controller
         $pdf = PDF::loadview('SuratJalan_PDF', $datas)->setPaper('a4', 'potrait');
         return $pdf->stream();
     }
+
+    /**
+     * Download the specified resource.
+     *
+     * @param  \App\Models\Document  $PurchaseOrder
+     * @return \Illuminate\Http\Response
+     */
+    public function downloadSuratJalan(Document $document)
+    {
+        // Get latest document number
+        $document_number = $document->document_number;
+
+        // Set document number
+        if ($document_number < 10) {
+            $document_number = '00' . $document_number;
+        } elseif ($document_number < 100) {
+            $document_number = '0' . $document_number;
+        }
+
+        // Wrapping data
+        $datas = [
+            'orders' => $document->orders,
+            'print_date' => $document->print_date,
+            'purchase_order' => $document->orders->first()->salesOrder,
+            'total_product' => 0,
+            'document_number' => $document_number
+        ];
+        $pdf = PDF::loadview('SuratJalan_PDF', $datas)->setPaper('a4', 'potrait');
+        return $pdf->download();
+    }
+
+    /**
+     * Download the specified resource.
+     *
+     * @param  \App\Models\Document  $order
+     * @return \Illuminate\Http\Response
+     */
+    public function downloadInvoice(Document $document)
+    {
+        // Get latest document number
+        $document_number = $document->document_number;
+
+        // Set document number
+        if ($document_number < 10) {
+            $document_number = '00' . $document_number;
+        } elseif ($document_number < 100) {
+            $document_number = '0' . $document_number;
+        }
+
+        // Wrapping data
+        $datas = [
+            'orders' => $document->orders,
+            'print_date' => $document->print_date,
+            'purchase_order' => $document->orders->first()->salesOrder,
+            'total_product' => 0,
+            'document_number' => $document_number,
+            'subtotal' => 0
+        ];
+        $pdf = PDF::loadview('Invoice_PDF', $datas)->setPaper('a4', 'potrait');
+        return $pdf->download();
+    }
 }

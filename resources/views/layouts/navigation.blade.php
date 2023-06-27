@@ -83,6 +83,18 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('product.index')" :active="request()->routeIs('product.index')">
+                {{ __('Product') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('customer.index')" :active="request()->routeIs('customer*')">
+                {{ __('Customer') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('order.index')" :active="request()->routeIs('order*')">
+                {{ __('Sales Order') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('document.index')" :active="request()->routeIs('document*')">
+                {{ __('Document') }}
+            </x-responsive-nav-link>
         </div>
 
         <!-- Responsive Settings Options -->

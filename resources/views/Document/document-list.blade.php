@@ -29,15 +29,15 @@
 
                     {{-- table --}}
                     <div class="container overflow-auto rounded-xl relative shadow-sm rounded-t-lg">
-                        <table class="table-auto w-full border border-collapse mt-4 px-3">
-                            <thead>
-                                <tr class="bg-gradient-to-r from-slate-200 to-slate-200/80">
-                                    <th class="p-2">No.</th>
+                        <table class="table table-auto lg:w-full w-[600px] border border-collapse mt-4 px-3">
+                            <thead class="table-header-group">
+                                <tr class="bg-gradient-to-r from-slate-200 to-slate-200/80 table-row">
+                                    <th class="p-2 lg:table-cell hidden">No.</th>
                                     <th class="p-2">Document Code</th>
                                     <th class="p-2">Order ID</th>
                                     <th class="p-2">Customer</th>
-                                    <th class="p-2">Item</th>
-                                    <th class="p-2">Address</th>
+                                    <th class="p-2 lg:table-cell hidden">Item</th>
+                                    <th class="p-2 lg:table-cell hidden">Address</th>
                                     <th class="p-2">Printed at</th>
                                     <th class="p-2">Action</th>
                                 </tr>
@@ -49,17 +49,17 @@
                                     </tr>
                                 @endif
                                 @foreach ($documents as $document)
-                                <tr class="border-t border-b text-center">
-                                    <td class="p-2">{{ $loop->iteration }}</td>
+                                <tr class="border-t border-b text-center table-row">
+                                    <td class="p-2 lg:table-cell hidden">{{ $loop->iteration }}</td>
                                     <td class="p-2">{{ $document->document_code }}</td>
                                     <td class="p-2">{{ $document->orders->first()->salesOrder->order_code }}</td>
                                     <td class="p-2">{{ $document->orders->first()->salesOrder->customer->name }}</td>
-                                    <td class="p-2">{{ count($document->orders) }}</td>
-                                    <td class="p-2">{{ Str::limit($document->orders->first()->salesOrder->customer->address, 18) }}</td>
+                                    <td class="p-2 lg:table-cell hidden">{{ count($document->orders) }}</td>
+                                    <td class="p-2 lg:table-cell hidden">{{ Str::limit($document->orders->first()->salesOrder->customer->address, 18) }}</td>
                                     <td class="p-2">{{ $document->print_date }}</td>
                                     <td class="p-2">
                                         <a class="show-button" href="{{ route('document.show', $document->document_code) }}"><i class="fa-regular fa-eye text-gray-400 hover:text-gray-600 text-lg px-3"></i></a>
-                                        <button value="{{ $document->document_code }}" class="delete-button"><i class="fa-solid fa-trash hover:text-[#144272] text-[#2C74B3] text-lg px-3"></i></button>
+                                        <button value="{{ $document->document_code }}" class="delete-button lg:inline-block hidden"><i class="fa-solid fa-trash hover:text-[#144272] text-[#2C74B3] text-lg px-3"></i></button>
                                     </td>
                                 </tr>
                                 @endforeach

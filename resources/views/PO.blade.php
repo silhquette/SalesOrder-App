@@ -18,7 +18,7 @@
                         <span class="text-lg">{{ __("Sales Order List") }}</span>
                         
                         {{-- SEARCH BAR --}}
-                        <div class="text-right mr-8 inline-block" id="search">
+                        <div class="text-right mr-8 lg:inline-block hidden" id="search">
                             <form action="">
                                 <input type="text" class="border-x-0 border-t-0 outline-none focus:ring-0 px-3 pb-1 pt-0 pr-9" id="keyword" placeholder="cari order atau kode">
                                 <i class="fa-solid fa-magnifying-glass ml-[-28px]"></i>
@@ -28,17 +28,16 @@
 
                     {{-- TABLE --}}
                     <div class="container overflow-auto rounded-xl relative shadow-sm rounded-t-lg">
-                        <table class="table-auto w-full border border-collapse mt-4 px-3">
-                            <thead>
-                                <tr class="bg-gradient-to-r from-slate-200 to-slate-200/80">
-                                    <th class="p-2">No.</th>
+                        <table class="table table-auto lg:w-full w-[600px] border border-collapse mt-4 px-3">
+                            <thead class="table-header-group">
+                                <tr class="table-row bg-gradient-to-r from-slate-200 to-slate-200/80">
+                                    <th class="p-2 lg:table-cell hidden">No.</th>
                                     <th class="p-2">Order Number (ID)</th>
                                     <th class="p-2">No. PO Cust</th>
                                     <th class="p-2">Tangal PO Cust</th>
                                     <th class="p-2">Customer</th>
-                                    {{-- <th class="p-2">Address</th> --}}
-                                    <th class="p-2">Amount</th>
-                                    <th class="p-2">Due On</th>
+                                    <th class="p-2 lg:table-cell hidden">Amount</th>
+                                    <th class="p-2 lg:table-cell hidden">Due On</th>
                                     <th class="p-2">Action</th>
                                 </tr>
                             </thead>
@@ -49,14 +48,14 @@
                                     </tr>
                                 @endif
                                 @foreach ($PO as $purchaseOrder)
-                                <tr class="border-t border-b text-center">
-                                    <td class="p-2">{{ $loop->iteration }}</td>
+                                <tr class="table-row border-t border-b text-center">
+                                    <td class="p-2 lg:table-cell hidden">{{ $loop->iteration }}</td>
                                     <td class="p-2">{{ $purchaseOrder->order_code }}</td>
                                     <td class="p-2">{{ $purchaseOrder->nomor_po }}</td>
                                     <td class="p-2">{{ date_format(date_create($purchaseOrder->tanggal_po),"d M Y") }}</td>
                                     <td class="p-2">{{ $purchaseOrder->customer->name }}</td>
-                                    <td class="p-2">Rp. {{ number_format($purchaseOrder['total'], 2, ',', '.') }}</td>
-                                    <td class="p-2">{{ date_format(date_create($purchaseOrder->due_time),"d M Y") }}</td>
+                                    <td class="p-2 lg:table-cell hidden">Rp. {{ number_format($purchaseOrder['total'], 2, ',', '.') }}</td>
+                                    <td class="p-2 lg:table-cell hidden">{{ date_format(date_create($purchaseOrder->due_time),"d M Y") }}</td>
                                     <td class="p-2">
                                         <button title="details" value="{{ $purchaseOrder->order_code }}" class="show-button"><i class="fa-solid fa-eye hover:text-[#144272] text-[#2C74B3] text-lg px-3"></i></button>
                                     </td>
@@ -68,7 +67,7 @@
                 </div>
             </div>
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-8 w-fit">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-8 w-fit lg:block hidden">
                 <div class="p-6 text-gray-900 py-4 w-fit flex items-center hover:text-[#144272]">
                     <a href="{{ route('order.create') }}">Create Sales Order</a> <i class="fa-solid fa-arrow-right ml-3"></i></a>
                 </div>
@@ -80,7 +79,7 @@
     {{-- DETAILS --}}
     <div id="detail-wrap" class="hidden">
         <div class="fixed top-0 left-0 right-0 bottom-0 bg-black/70"></div>
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg 2xl:w-2/3 w-5/6 relative mx-auto -mt-96 mb-20">
+        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg 2xl:w-2/3 lg:w-5/6 w-[1000px] relative mx-auto -mt-96 mb-20">
             <div class="p-6">
                 <div class="mb-3">
                     <div class="flex justify-between items-center">
@@ -96,9 +95,9 @@
                     <div class="text-lg text-gray-900 font-semibold">{{ __("Ordered Items") }}</div>
                     <div class="text-sm text-gray-600" id="item-summary">{{ __("4 items ordered") }}</div>
                     <div class="mt-3" id="row">
-                        <table class="w-full table-fixed">
+                        <table class="table w-full table-fixed">
                             <tbody id="ordered-item">
-                                <tr class="text-center">
+                                <tr class="table-row text-center">
                                     <td id="product" class="text-left pl-16">
                                         <div class="text-lg font-semibold">Nama produk</div>
                                         <div class="text-sm">12 x 12 mm</div>
@@ -113,7 +112,7 @@
                         </table>
                         <table class="w-full table-fixed">
                             <tbody>
-                                <tr class="text-center bg-slate-100">
+                                <tr class="table-row text-center bg-slate-100">
                                     <td class="font-semibold" colspan="4">Sub-total</td>
                                     <td id="sub-total">360000</td>
                                 </tr>

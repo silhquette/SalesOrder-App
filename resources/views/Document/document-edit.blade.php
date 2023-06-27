@@ -81,7 +81,7 @@
                         </div>
                     </div>
                 </div>
-                <x-primary-button class="w-1/3 relative left-1/2 -translate-x-1/2 mb-8" id="generate-button">
+                <x-primary-button class="lg:w-1/3 relative left-1/2 -translate-x-1/2 mb-8" id="generate-button">
                     {{ __('Save Document') }}
                 </x-primary-button>
                 </form>
@@ -92,10 +92,11 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-8">
                 <div class="p-6 text-gray-900 flex items-center flex-col">
                     <div class="flex justify-between mb-6">
-                        <span class="text-xl">{{ __("PDF Preview") }}</span>
+                        <span class="text-xl lg:inline hidden">{{ __("PDF Preview") }}</span>
+                        <span class="text-xl inline lg:hidden">{{ __("PDF Download") }}</span>
                     </div>
                     {{-- PREVIEW PDF --}}
-                    <div class="flex w-full gap-4">
+                    <div class="lg:flex hidden w-full gap-4">
                         <iframe id="surat-jalan-preview" width="50%" src="" height="700px" class=" rounded-md"></iframe>
                         <iframe id="invoice-preview" width="50%" src="" height="700px" class=" rounded-md"></iframe>
                     </div>
