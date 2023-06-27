@@ -97,8 +97,19 @@
                     </div>
                     {{-- PREVIEW PDF --}}
                     <div class="lg:flex hidden w-full gap-4">
-                        <iframe id="surat-jalan-preview" width="50%" src="" height="700px" class=" rounded-md"></iframe>
-                        <iframe id="invoice-preview" width="50%" src="" height="700px" class=" rounded-md"></iframe>
+                        <iframe id="surat-jalan-preview" src="" height="700px" class="lg:w-1/2 w-full rounded-md"></iframe>
+                        <iframe id="invoice-preview" src="" height="700px" class="lg:w-1/2 w-full rounded-md"></iframe>
+                    </div>
+                    {{-- DOWNLOAD PDF --}}
+                    <div class="flex mb-14 gap-6 lg:hidden">
+                        <div class="flex flex-col items-center justify-center gap-2 border border-gray-300 aspect-square rounded-xl hover:bg-gray-100 p-8">
+                            <img src="{{ asset('assets/images/pdf.webp') }}" class="drop-shadow-sm" alt="pdf-icon">
+                            <p>Surat Jalan</p>
+                        </div>
+                        <div class="flex flex-col items-center justify-center gap-2 border border-gray-300 aspect-square rounded-xl hover:bg-gray-100 p-8">
+                            <img src="{{ asset('assets/images/pdf.webp') }}" class="drop-shadow-sm" alt="pdf-icon">
+                            <p>Invoice</p>
+                        </div>
                     </div>
                 </div>
             </div>

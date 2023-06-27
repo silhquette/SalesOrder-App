@@ -102,7 +102,7 @@
                         <iframe id="invoice-preview" src="" height="700px" class="lg:w-1/2 w-full rounded-md"></iframe>
                     </div>
                     {{-- DOWNLOAD PDF --}}
-                    <div class="flex mb-14 gap-6">
+                    <div class="flex mb-14 gap-6 lg:hidden">
                         <a href="{{ route('downloadSuratJalan', $document->document_code) }}" class="flex flex-col items-center justify-center gap-2 border border-gray-300 aspect-square rounded-xl hover:bg-gray-100 p-8">
                             <img src="{{ asset('assets/images/pdf.webp') }}" class="drop-shadow-sm" alt="pdf-icon">
                             <p>Surat Jalan</p>
