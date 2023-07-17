@@ -98,7 +98,7 @@ class SalesOrderController extends Controller
             Validator::make(
                 $order,
                 [
-                    'sales_order_id' => 'exists:Sales_orders,id',
+                    'sales_order_id' => 'exists:sales_orders,id',
                     'product_id' => 'exists:products,id'
                 ]
             );

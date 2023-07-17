@@ -48,7 +48,7 @@
                                 </div>
 
                                 <!-- Term Of Payment -->
-                                <div class="mx-4 lg:order-2 lg:col-span-3 order-last col-span-2">
+                                <div class="mx-4 lg:order-none lg:col-span-3 order-last col-span-2">
                                     <x-input-label for="term" :value="__('Term Of Payment (Day)')" class="after:content-['*'] after:ml-0.5 after:text-red-500" />
                                     <x-text-input id="term" class="block mt-1 w-full" type="number" name="term" value="{{ old('term') ? old('term') : (isset($customer->term) ? $customer->term : '') }}" min="0" required autofocus/>
                                     <x-input-error :messages="$errors->get('term')" class="mt-2" />
