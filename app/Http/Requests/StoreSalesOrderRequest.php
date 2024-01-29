@@ -24,9 +24,9 @@ class StoreSalesOrderRequest extends FormRequest
     public function rules()
     {
         return [
-            'nomor_po' => 'unique:Sales_orders,nomor_po',
+            'nomor_po' => 'unique:sales_orders,nomor_po',
             'ppn' => '',
-            'order_code' => 'unique:Sales_orders,order_code',
+            'order_code' => 'unique:sales_orders,order_code',
             'due_time' => 'date',
             'tanggal_po' => 'date',
         ];
